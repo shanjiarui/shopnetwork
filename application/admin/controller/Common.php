@@ -14,4 +14,11 @@ class Common extends Controller
 			$this->assign('name',$name);
 		}
 	}
+	public function newToken()
+	{
+    	$new_token=uniqid();
+		Session::set('token',$new_token);
+		$js=['token'=>$new_token];
+		echo json_encode($js);
+	}
 }

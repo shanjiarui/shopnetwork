@@ -8,12 +8,20 @@ use gmars\rbac\Rbac;
 use think\Db;
 use Request;
 use think\Validate;
+use Session;
 class Permission extends Common
 {
+	// public function initialize()
+	// {
+		
+	// }
 	public function permission()
 	{
+		$token=uniqid();
+		Session::set('token',$token);
 		$ayy=Db::query("select * from permission_category");
 		$this->assign('arr',$ayy);
+		$this->assign('token',$token);
 		return $this->fetch('permission/permission');
 	}
 	public function list()
@@ -41,6 +49,7 @@ class Permission extends Common
     	$name=Request::post('name');
     	$path=Request::post('path');
     	$category=Request::post('category');
+    	$token=Request::post('token');
     	$select_arr=$rbac->getPermission([['name', '=', $name]]);
     	//逻辑判断如果不修改权限名字是否是自己
 	    	if (!empty($select_arr)&&$select_arr[0]['id']==$id) {
@@ -51,13 +60,26 @@ class Permission extends Common
 	    		$js=['code'=>'0','status'=>'error','data'=>'权限名字已存在！'];
 		    	echo json_encode($js);
 	    	}elseif (empty($select_arr)) {
+	    		//当所有验证都通过之后验证token
+	    		if ($token!=Session::get('token')) {
+		    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
+		        	echo json_encode($js);
+		        	die;
+		    	}
 	    		$arr=Db::query("update permission set name='$name',category_id=$category,path='$path' where id=$id");
 		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
+		    	echo json_encode($js);
 	    	}
     }
     public function del_permission()
     {
+    	$token=Request::post('token');
     	$id=Request::post('id');
+    	if ($token!=Session::get('token')) {
+    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
+        	echo json_encode($js);
+        	die;
+    	}
     	$arr=Db::query("delete from permission where id=$id");
     	$js=['code'=>'0','status'=>'ok','data'=>$arr];
     	echo json_encode($js);
@@ -67,6 +89,12 @@ class Permission extends Common
     	$name=Request::post('name');
     	$cate=Request::post('cate');
     	$path=Request::post('path');
+    	$token=Request::post('token');
+    	if ($token!=Session::get('token')) {
+    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
+        	echo json_encode($js);
+        	die;
+    	}
     	//传值过来先使用验证器进行验证，类似正则表达式
      	 $data = [
             'name'  => $name,
@@ -109,11 +137,17 @@ class Permission extends Common
     public function all_del()
     {
     	$id=Request::post('id');
+    	$token=Request::post('token');
     	$arr_id=explode(",", $id);
     	if (empty($arr_id[1])) {
     		$js=['code'=>'0','status'=>'error','data'=>"请选择要删除的权限!"];
 			echo json_encode($js);
 			die;
+    	}
+    	if ($token!=Session::get('token')) {
+    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
+        	echo json_encode($js);
+        	die;
     	}
     	for ($i=1; $i < count($arr_id) ; $i++) { 
     		$id=$arr_id[$i];
@@ -129,4 +163,5 @@ class Permission extends Common
     	$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		echo json_encode($js);
     }
+
 }

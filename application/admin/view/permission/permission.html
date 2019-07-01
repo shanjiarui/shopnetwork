@@ -97,6 +97,7 @@
 			<div class="text-c">
 					<input type="text" class="input-text" style="width:200px" placeholder="权限名称" id="name">
 					<input type="text" class="input-text" style="width:200px" placeholder="权限路径" id="path">
+					<input type="text" name="__token__" id="token" value="{$token}" hidden="" />
 					<select id="cate">
 						<option value="">选择分组</option>
 						{volist name='arr' id='ar'}
@@ -136,15 +137,6 @@
 							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
 						</div>
 						<div class="modal-body">
-							<input type="text" value="" id="up_permission_id" hidden="">
-							权限名称:<input type="text" value="" id="up_permission">
-							<br>
-							<br>
-							权限分类:<select id="up_permission_category" style="width: 160px;height: 30px">
-								
-							</select>
-							<br>
-							<br>
 							权限路径:<input type="text" value="" id="up_path">
 						</div>
 						<div class="modal-footer">
@@ -178,6 +170,7 @@
 		show_list()
 	// });
 	function up_permission(id) {
+			
 			var option=""
 			$.ajax({
 				url:"{:url('permission/up_permission')}",
@@ -205,42 +198,53 @@
 		var name=$('#up_permission').val()
 		var path=$('#up_path').val()
 		var category=$('#up_permission_category').val()
+		var token=$('#token').val()
 		$.ajax({
 			url:"{:url('permission/up_permission_action')}",
 			data:{
 				id:id,
 				name:name,
 				path:path,
-				category:category
+				category:category,
+				token:token
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
-				console.log(res)
+				// if (res.code=="120") {
+				// 	mytoken()
+				// 	alert(res.data)
+				// }
 				if (res.status=="ok") {
 					alert('修改成功!')
 					$("#modal-demo").modal("hide")
+					mytoken()
 					show_list()
 				}else{
+					mytoken()
 					alert(res.data)
 				}
 			}
 		})
 	}
 	function del_permission(id) {
+		var token=$('#token').val()
 		$.ajax({
 			url:"{:url('permission/del_permission')}",
 			data:{
 				id:id,
+				token:token
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
 				if (res.status=='ok') {
+					mytoken()
 					alert('删除成功!')
 					show_list()
 				}else{
-					alert('删除失败!')
+					alert(res.data)
+					mytoken()
 				}
 			}
 		})
@@ -249,6 +253,7 @@
 		var name=$('#name').val()
 		var path=$('#path').val()
 		var cate=$('#cate').val()
+		var token=$('#token').val()
 		// console.log(name)
 		// console.log(path)
 		// console.log(cate)
@@ -257,19 +262,28 @@
 			data:{
 				name:name,
 				path:path,
-				cate:cate
+				cate:cate,
+				token:token
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
+				// if (res.code=="120") {
+				// 	mytoken()
+				// 	$("#op").html(res.data)
+				// 	$("#op").css("color","red")
+				// 	setTimeout(none,3000)
+				// }
 				if (res.status=="error") {
 					$("#op").html(res.data)
 					$("#op").css("color","red")
+					mytoken()
 					setTimeout(none,3000)
 				}else{
 					$("#op").html(res.data)
 					$("#op").css("color","green")
 					setTimeout(none,3000)
+					mytoken()
 					show_list()
 				}
 			}
@@ -282,6 +296,7 @@
 		//取出所有的checkbox的input
 		var x=document.getElementsByName("my_input");
 		var a=""
+		 var token=$('#token').val()
 		for (var i = 0; i < x.length; i++) {
 				 if (x[i].checked) {
 				 	a=a+","+x[i].value
@@ -290,17 +305,29 @@
 		$.ajax({
 			url:"{:url('permission/all_del')}",
 			data:{
-				id:a
+				id:a,
+				token:token
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
 				if (res.status=="ok") {
 					alert("删除成功！")
+					mytoken()
 					show_list()
 				}else{
 					alert(res.data)
+					mytoken()
 				}
+			}
+		})
+	}
+	function mytoken() {
+		$.ajax({
+			url:"{:url('common/newToken')}",
+			dataType:'json',
+			success:function (res) {
+				$('#token').val(res.token)
 			}
 		})
 	}
@@ -317,5 +344,6 @@
 			}
 		})
 	}
+	
 	
 </script>
