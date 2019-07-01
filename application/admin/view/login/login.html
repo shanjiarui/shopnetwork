@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+</script>
+		<meta charset="utf-8" />
+		<title>登s录</title>
+		<link rel="stylesheet" href="__STATIC__/css/login.css" />
+	</head>
+
+	<body>
+		<div class="top">单某人&nbsp;·&nbsp;用数据改变未来</div>
+		<div class="content">
+			<div class="login">
+				<div class="title">后台登录</div>
+				<div class="line">
+					<img class="smallImg" src="__STATIC__/img/icon1.png" />
+					<input placeholder="请输入账号" type="text" id="name" />
+				</div>
+				<div class="line">
+					<img class="smallImg" src="__STATIC__/img/icon2.png" />
+					<input placeholder="请输入密码" type="password" id="password" />
+				</div>
+				<div class="line">
+					<img class="smallImg" src="__STATIC__/img/icon2.png" />
+					<input placeholder="请输入验证码" type="text" id="code" />
+				</div>
+				<span id="sp"></span>
+				<div><img src="{:captcha_src()}" alt="captcha" onclick="onf()" id="cap" /></div>
+				<button type="button" class="logBut" onclick="testing(15)">登&nbsp;&nbsp;录</button>
+			</div>
+		</div>
+	</body>
+<script type="text/javascript">
+	function testing() {
+		var name=$('#name').val()
+		var password=$('#password').val()
+		var code=$('#code').val()
+		$.ajax({
+			url:"{:url('login/loginAction')}",
+			data:{
+				name:name,
+				password:password,
+				code:code
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=="error") {
+					$('#sp').html(res.data)
+					$('#sp').css('color','red')
+					onf()
+				}else{
+					location.href="{:url('index/index')}"
+				}
+			}
+		})
+	}
+	function onf() {
+		$('#cap').attr('src',this.src='{:captcha_src()}'+Math.random())
+	}
+</script>
+</html>

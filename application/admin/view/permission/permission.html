@@ -1,0 +1,321 @@
+{include file='header'}
+
+<style type="text/css">
+	.fade {opacity: 0;
+	-webkit-transition: opacity .15s linear;
+	-o-transition: opacity .15s linear;
+	transition: opacity .15s linear}
+.fade.in {opacity: 1}
+.modal-open {overflow: hidden}
+.modal{ position:fixed; left:0; top:30%; right:0; bottom:0; z-index:1040; display:none; overflow:hidden;-webkit-overflow-scrolling:touch; outline:0}
+.modal.fade .modal-dialog{
+	-webkit-transition: -webkit-transform .3s ease-out;
+	-o-transition: -o-transform .3s ease-out;
+	transition: transform .3s ease-out;
+	-webkit-transform: translate(0,-50%);
+	-ms-transform: translate(0,-50%);
+	-o-transform: translate(0,-50%);
+	transform: translate(0,-50%)}
+.modal.in .modal-dialog {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	-o-transform: translate(0, 0);
+	transform: translate(0, 0)}
+.modal-open .modal {overflow-x: hidden;overflow-y: auto}
+	.modal-backdrop {position: fixed;top: 0;right: 0;bottom: 0;left: 0;background-color: #000}
+	.modal-backdrop.fade {filter: alpha(opacity=0);opacity: 0}
+	.modal-backdrop.in {filter: alpha(opacity=50);opacity: .5}
+	.modal-dialog {position: relative;width: auto;margin: 10px}
+	.modal-content{position: relative;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+		-webkit-background-clip: padding-box;
+		background-clip: padding-box; 
+		-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+		box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+	
+		.modal-header {min-height: 16.42857143px;padding: 15px;border-bottom: 1px solid #eee; position:relative}
+		.modal-header .close{position:absolute; right:10px; top:10px}
+		.modal-header h3,.modal-header .modal-title{margin:0; padding:10px 0; font-size:16px}
+	
+		.modal-body {position:relative;padding: 15px;overflow-y:visible;word-break:break-all}
+			.modal-form {margin-bottom: 0}
+	
+		.modal-footer {padding:15px;margin-bottom: 0;text-align: right;background-color: #f5f5f5;border-top: 1px solid #eee;*zoom: 1}
+		.modal-footer:before,.modal-footer:after {display: table;content: ""}
+		.modal-footer:after {clear: both}
+		.modal-footer .btn + .btn {margin-left: 5px;margin-bottom: 0}
+		.modal-footer .btn-group .btn + .btn {margin-left: -1px}
+		.modal-footer .btn-block + .btn-block {margin-left: 0}
+		
+	.modal-scrollbar-measure {position: absolute;top: -9999px;width: 50px;height: 50px;overflow: scroll}
+	
+	.radius .modal-content{ border-radius:6px}
+	.radius .modal-footer{ border-bottom-left-radius:6px; border-bottom-right-radius:6px}
+	@media (min-width: 768px) {
+		.modal-dialog {width: 600px;margin: 30px auto}
+		.modal-content {-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);box-shadow: 0 5px 15px rgba(0, 0, 0, .5)}
+		.modal-sm {width: 300px}
+	}
+	@media (min-width: 992px) {
+		.modal-lg {width: 900px}
+	}
+ 
+.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
+#up_permission{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+/*#permission_category{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}*/
+#up_path{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+</style>
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+					<input type="text" class="input-text" style="width:200px" placeholder="权限名称" id="name">
+					<input type="text" class="input-text" style="width:200px" placeholder="权限路径" id="path">
+					<select id="cate">
+						<option value="">选择分组</option>
+						{volist name='arr' id='ar'}
+						<option value="{$ar.id}">{$ar.name}</option>
+						{/volist}
+					</select>
+					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加权限节点</button>
+
+			</div>
+			<div class="text-c">
+			<span id="op">&nbsp</span>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<table class="table table-border table-bordered table-bg">
+				<thead>
+					<tr>
+						<th scope="col" colspan="7">权限节点</th>
+					</tr>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="40">ID</th>
+						<th width="200">权限名称</th>
+						<th width="200">权限分类</th>
+						<th width="200">权限路径</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				<tbody id="ii">
+					
+				</tbody>
+			</table>
+			<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title">请在下面进行修改</h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+						</div>
+						<div class="modal-body">
+							<input type="text" value="" id="up_permission_id" hidden="">
+							权限名称:<input type="text" value="" id="up_permission">
+							<br>
+							<br>
+							权限分类:<select id="up_permission_category" style="width: 160px;height: 30px">
+								
+							</select>
+							<br>
+							<br>
+							权限路径:<input type="text" value="" id="up_path">
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" onclick="up_ok()">确定</button>
+							<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+{include file='footer'}
+<script type="text/javascript">
+	//为什么ready里面的方法是局部的 ready外面的方法没办法调用 答：加载顺序不同
+	// $(document).ready(function(){
+		function show_list() {
+			var tr=""
+			$.ajax({
+			url:"{:url('permission/list')}",
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				for (var i = 0; i < arr.length; i++) {
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td onclick='new_update("+arr[i].id+")'>"+arr[i].p_name+"</td><td id='"+arr[i].id+"'>"+arr[i].name+"</td><td>"+arr[i].path+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+				}
+				$("#ii").html(tr)
+			}
+		  })
+		}
+		show_list()
+	// });
+	function up_permission(id) {
+			var option=""
+			$.ajax({
+				url:"{:url('permission/up_permission')}",
+				data:{
+					id:id,
+				},
+				type:'post',
+				dataType:'json',
+				success:function (res) {
+					var arr=res.data
+					var ayy=res.cate
+					$('#up_permission_id').val(arr[0].id)
+					$('#up_permission').val(arr[0].name)
+					for (var i = 0; i < ayy.length; i++) {
+						option=option+"<option value='"+ayy[i]['id']+"'>"+ayy[i]['name']+"</option>"
+					}
+					$('#up_permission_category').html(option)
+					$('#up_path').val(arr[0].path)
+					$("#modal-demo").modal("show")
+				}
+			})
+		}
+	function up_ok() {
+		var id=$('#up_permission_id').val()
+		var name=$('#up_permission').val()
+		var path=$('#up_path').val()
+		var category=$('#up_permission_category').val()
+		$.ajax({
+			url:"{:url('permission/up_permission_action')}",
+			data:{
+				id:id,
+				name:name,
+				path:path,
+				category:category
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				console.log(res)
+				if (res.status=="ok") {
+					alert('修改成功!')
+					$("#modal-demo").modal("hide")
+					show_list()
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+	function del_permission(id) {
+		$.ajax({
+			url:"{:url('permission/del_permission')}",
+			data:{
+				id:id,
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='ok') {
+					alert('删除成功!')
+					show_list()
+				}else{
+					alert('删除失败!')
+				}
+			}
+		})
+	}
+	function add_action() {
+		var name=$('#name').val()
+		var path=$('#path').val()
+		var cate=$('#cate').val()
+		// console.log(name)
+		// console.log(path)
+		// console.log(cate)
+		$.ajax({
+			url:"{:url('Permission/add_action')}",
+			data:{
+				name:name,
+				path:path,
+				cate:cate
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=="error") {
+					$("#op").html(res.data)
+					$("#op").css("color","red")
+					setTimeout(none,3000)
+				}else{
+					$("#op").html(res.data)
+					$("#op").css("color","green")
+					setTimeout(none,3000)
+					show_list()
+				}
+			}
+		})
+	}
+	function none() {
+		$('#op').html("&nbsp")
+	}
+	function all_del() {
+		//取出所有的checkbox的input
+		var x=document.getElementsByName("my_input");
+		var a=""
+		for (var i = 0; i < x.length; i++) {
+				 if (x[i].checked) {
+				 	a=a+","+x[i].value
+				 }
+			}
+		$.ajax({
+			url:"{:url('permission/all_del')}",
+			data:{
+				id:a
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=="ok") {
+					alert("删除成功！")
+					show_list()
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+	function new_update(id) {
+		$.ajax({
+			url:"{:url('permission/new_update')}",
+			data:{
+				id:id,
+			},
+			type:"post",
+			dataType:"json",
+			success:function (res) {
+				$('#'+id).html("<input type='text'>")
+			}
+		})
+	}
+	
+</script>
