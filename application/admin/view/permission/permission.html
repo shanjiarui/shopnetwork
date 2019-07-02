@@ -161,7 +161,7 @@
 			success:function (res) {
 				arr=res.data
 				for (var i = 0; i < arr.length; i++) {
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td onclick='new_update("+arr[i].id+")'>"+arr[i].p_name+"</td><td id='"+arr[i].id+"'>"+arr[i].name+"</td><td>"+arr[i].path+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td><span onclick='new_update("+arr[i].id+")'  id='"+arr[i].id+"'>"+arr[i].p_name+"</span></td><td>"+arr[i].name+"</td><td>"+arr[i].path+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 				}
 				$("#ii").html(tr)
 			}
@@ -332,15 +332,42 @@
 		})
 	}
 	function new_update(id) {
+			    var name=$('#'+id).html()
+				$('#'+id).parent().html("<input type='text' onblur='new_update_action("+id+")' style='border:none' placeholder='请在这里输入!' id='"+id+"' value='"+name+"'>")
+				$('#'+id).focus()
+				obj=document.getElementById(id)
+				var len = obj.value.length; 
+		        if (document.selection) { 
+		            var sel = obj.createTextRange(); 
+		            sel.moveStart('character',len); //设置开头的位置
+		            sel.collapse(); 
+		            sel.select(); 
+		        } else if (typeof obj.selectionStart == 'number' && typeof obj.selectionEnd == 'number') { 
+		            obj.selectionStart = obj.selectionEnd = len; 
+		        } 
+				// $('#'+id).html("<input type='text' >")
+
+	}
+	function new_update_action(id) {
+		var name=$('#'+id).val()
+		var token=$('#token').val()
 		$.ajax({
-			url:"{:url('permission/new_update')}",
+			url:"{:url('permission/new_update_action')}",
 			data:{
 				id:id,
+				name:name,
+				token:token
 			},
 			type:"post",
 			dataType:"json",
 			success:function (res) {
-				$('#'+id).html("<input type='text'>")
+				if (res.status=="ok") {
+					$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+name+"</span>")
+				}else{
+					alert(res.data)
+					$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+res.old_name+"</span>")
+				}
+				
 			}
 		})
 	}

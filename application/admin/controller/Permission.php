@@ -163,5 +163,34 @@ class Permission extends Common
     	$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		echo json_encode($js);
     }
-
+    public function new_update_action()
+    {
+    	$rbac=new Rbac;
+    	$id=Request::post('id');
+    	$name=Request::post('name');
+    	$token=Request::post('token');
+    	//此处的查询是用来判断如果没有修改那么久提交了会报错重名 用根据name查出来的ID与ajax传过来的id进行比对判断
+    	$select_arr=$rbac->getPermission([['name', '=', $name]]);
+    	//下面这个查询是用来判断修改是否成功 如果未成功将会查出来修改前的名字 将名字在json串中输出 方便在ajax页面替换span标签
+    	$old_arr=$rbac->getPermission([['id', '=', $id]]);
+    	//逻辑判断如果不修改权限名字是否是自己
+	    	if (!empty($select_arr)&&$select_arr[0]['id']==$id) {
+	    		$arr=Db::query("update permission set name='$name' where id=$id");
+		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
+		    	echo json_encode($js);
+	    	}elseif (!empty($select_arr)&&$select_arr[0]['id']!=$id) {
+	    		$js=['code'=>'0','status'=>'error','data'=>'权限名字已存在！','old_name'=>$old_arr[0]['name']];
+		    	echo json_encode($js);
+	    	}elseif (empty($select_arr)) {
+	    		//当所有验证都通过之后验证token
+	    		if ($token!=Session::get('token')) {
+		    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!",'old_name'=>$old_arr[0]['name']];
+		        	echo json_encode($js);
+		        	die;
+		    	}
+	    		$arr=Db::query("update permission set name='$name' where id=$id");
+		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
+		    	echo json_encode($js);
+	    	}
+    }	
 }
