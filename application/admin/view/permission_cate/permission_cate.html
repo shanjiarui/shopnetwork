@@ -65,23 +65,7 @@
 	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
 	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
 .modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
-#up_permission{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 10px 10px;
-    width: 300px;
-    font-size: 14px;
-}
-/*#permission_category{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 10px 10px;
-    width: 300px;
-    font-size: 14px;
-}*/
-#up_path{
+#up_permission_category{
     outline-style: none ;
     border: 1px solid #ccc; 
     border-radius: 3px;
@@ -99,21 +83,14 @@
 }
 </style>
 <section class="Hui-article-box">
-	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限分组管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="Hui-article">
 		<article class="cl pd-20">
 			<div class="text-c">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限名称" id="name">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限路径" id="path">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限描述" id="description">
-					<input type="text" name="__token__" id="token" value="{$token}" hidden="" />
-					<select id="cate">
-						<option value="">选择分组</option>
-						{volist name='arr' id='ar'}
-						<option value="{$ar.id}">{$ar.name}</option>
-						{/volist}
-					</select>
-					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加权限节点</button>
+				<input type="text" class="input-text" style="width:200px" placeholder="权限分组名称" id="name">
+				<input type="text" class="input-text" style="width:200px" placeholder="权限分组描述" id="description">
+				<input type="text" name="__token__" id="token" value="{$token}" hidden="" />
+				<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加权限分组</button>
 
 			</div>
 			<div class="text-c">
@@ -128,10 +105,8 @@
 					<tr class="text-c">
 						<th width="25"><input type="checkbox" name="" value=""></th>
 						<th width="40">ID</th>
-						<th width="200">权限名称</th>
-						<th width="200">权限分类</th>
-						<th width="200">权限描述</th>
-						<th width="200">权限路径</th>
+						<th width="200">分组名称</th>
+						<th width="200">分组描述</th>
 						<th width="100">操作</th>
 					</tr>
 				</thead>
@@ -147,21 +122,11 @@
 							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
 						</div>
 						<div class="modal-body">
-							<!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
-						<input type="text" value="" id="up_permission_id" hidden="">
-							权限名:<input type="text" value="" id="up_permission">
+						<input type="text" value="" id="up_permissioncategory_id" hidden="">
+							分类名:<input type="text" value="" id="up_permission_category">
 							<br>
 							<br>
-							
-							权限路径:<input type="text" value="" id="up_path">
-							<br>
-							<br>
-							权限描述:<input type="text" value="" id="my_description">
-							<br>
-							<br>
-							权限分类:<select id="up_permission_category">
-															
-									</select>
+							分类描述:<input type="text" value="" id="my_description">
 						</div>
 						<div class="modal-footer">
 							<button class="btn btn-primary" onclick="up_ok()">确定</button>
@@ -180,12 +145,12 @@
 		function show_list() {
 			var tr=""
 			$.ajax({
-			url:"{:url('permission/list')}",
+			url:"{:url('permissioncate/list')}",
 			dataType:'json',
 			success:function (res) {
 				arr=res.data
 				for (var i = 0; i < arr.length; i++) {
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td><span onclick='new_update("+arr[i].id+")'  id='"+arr[i].id+"'>"+arr[i].p_name+"</span></td><td>"+arr[i].name+"</td><td>"+arr[i].description+"</td><td>"+arr[i].path+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td><span onclick='new_update("+arr[i].id+")'  id='"+arr[i].id+"'>"+arr[i].name+"</span></td><td>"+arr[i].description+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission_category("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_permission_category("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 				}
 				$("#ii").html(tr)
 			}
@@ -193,11 +158,9 @@
 		}
 		show_list()
 	// });
-	function up_permission(id) {
-			
-			var option=""
+	function up_permission_category(id) {
 			$.ajax({
-				url:"{:url('permission/up_permission')}",
+				url:"{:url('permissioncate/up_permission_category')}",
 				data:{
 					id:id,
 				},
@@ -205,38 +168,23 @@
 				dataType:'json',
 				success:function (res) {
 					var arr=res.data
-					var ayy=res.cate
-					$('#up_permission_id').val(arr[0].id)
-					$('#up_permission').val(arr[0].name)
+					$('#up_permissioncategory_id').val(arr[0].id)
+					$('#up_permission_category').val(arr[0].name)
 					$('#my_description').val(arr[0].description)
-					for (var i = 0; i < ayy.length; i++) {
-						if (arr[0]['category_id']==ayy[i]['id']) {
-							selected_option="<option value='"+ayy[i]['id']+"' selected>"+ayy[i]['name']+"</option>"	
-						}else{
-							option=option+"<option value='"+ayy[i]['id']+"'>"+ayy[i]['name']+"</option>"
-						}
-					}
-					new_option=selected_option+option
-					$('#up_permission_category').html(new_option)
-					$('#up_path').val(arr[0].path)
 					$("#modal-demo").modal("show")
 				}
 			})
 		}
 	function up_ok() {
-		var id=$('#up_permission_id').val()
-		var name=$('#up_permission').val()
-		var path=$('#up_path').val()
-		var category=$('#up_permission_category').val()
+		var id=$('#up_permissioncategory_id').val()
+		var name=$('#up_permission_category').val()
 		var token=$('#token').val()
 		var my_description=$('#my_description').val()
 		$.ajax({
-			url:"{:url('permission/up_permission_action')}",
+			url:"{:url('permissioncate/up_permissioncate_action')}",
 			data:{
 				id:id,
 				name:name,
-				path:path,
-				category:category,
 				token:token,
 				my_description:my_description,
 			},
@@ -260,10 +208,10 @@
 			}
 		})
 	}
-	function del_permission(id) {
+	function del_permission_category(id) {
 		var token=$('#token').val()
 		$.ajax({
-			url:"{:url('permission/del_permission')}",
+			url:"{:url('permissioncate/del_permission_category')}",
 			data:{
 				id:id,
 				token:token
@@ -284,31 +232,21 @@
 	}
 	function add_action() {
 		var name=$('#name').val()
-		var path=$('#path').val()
-		var cate=$('#cate').val()
 		var description=$('#description').val()
 		var token=$('#token').val()
 		// console.log(name)
 		// console.log(path)
 		// console.log(cate)
 		$.ajax({
-			url:"{:url('Permission/add_action')}",
+			url:"{:url('Permissioncate/add_action')}",
 			data:{
 				name:name,
-				path:path,
-				cate:cate,
 				token:token,
 				description:description
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
-				// if (res.code=="120") {
-				// 	mytoken()
-				// 	$("#op").html(res.data)
-				// 	$("#op").css("color","red")
-				// 	setTimeout(none,3000)
-				// }
 				if (res.status=="error") {
 					$("#op").html(res.data)
 					$("#op").css("color","red")
@@ -338,7 +276,7 @@
 				 }
 			}
 		$.ajax({
-			url:"{:url('permission/all_del')}",
+			url:"{:url('permissioncate/all_del')}",
 			data:{
 				id:a,
 				token:token
@@ -366,46 +304,46 @@
 			}
 		})
 	}
-	function new_update(id) {
-			    var name=$('#'+id).html()
-				$('#'+id).parent().html("<input type='text' onblur='new_update_action("+id+")' style='border:none' placeholder='请在这里输入!' id='"+id+"' value='"+name+"'>")
-				$('#'+id).focus()
-				obj=document.getElementById(id)
-				var len = obj.value.length; 
-		        if (document.selection) { 
-		            var sel = obj.createTextRange(); 
-		            sel.moveStart('character',len); //设置开头的位置
-		            sel.collapse(); 
-		            sel.select(); 
-		        } else if (typeof obj.selectionStart == 'number' && typeof obj.selectionEnd == 'number') { 
-		            obj.selectionStart = obj.selectionEnd = len; 
-		        } 
-				// $('#'+id).html("<input type='text' >")
+	// function new_update(id) {
+	// 		    var name=$('#'+id).html()
+	// 			$('#'+id).parent().html("<input type='text' onblur='new_update_action("+id+")' style='border:none' placeholder='请在这里输入!' id='"+id+"' value='"+name+"'>")
+	// 			$('#'+id).focus()
+	// 			obj=document.getElementById(id)
+	// 			var len = obj.value.length; 
+	// 	        if (document.selection) { 
+	// 	            var sel = obj.createTextRange(); 
+	// 	            sel.moveStart('character',len); //设置开头的位置
+	// 	            sel.collapse(); 
+	// 	            sel.select(); 
+	// 	        } else if (typeof obj.selectionStart == 'number' && typeof obj.selectionEnd == 'number') { 
+	// 	            obj.selectionStart = obj.selectionEnd = len; 
+	// 	        } 
+	// 			// $('#'+id).html("<input type='text' >")
 
-	}
-	function new_update_action(id) {
-		var name=$('#'+id).val()
-		var token=$('#token').val()
-		$.ajax({
-			url:"{:url('permission/new_update_action')}",
-			data:{
-				id:id,
-				name:name,
-				token:token
-			},
-			type:"post",
-			dataType:"json",
-			success:function (res) {
-				if (res.status=="ok") {
-					$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+name+"</span>")
-				}else{
-					alert(res.data)
-					$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+res.old_name+"</span>")
-				}
+	// }
+	// function new_update_action(id) {
+	// 	var name=$('#'+id).val()
+	// 	var token=$('#token').val()
+	// 	$.ajax({
+	// 		url:"{:url('permission/new_update_action')}",
+	// 		data:{
+	// 			id:id,
+	// 			name:name,
+	// 			token:token
+	// 		},
+	// 		type:"post",
+	// 		dataType:"json",
+	// 		success:function (res) {
+	// 			if (res.status=="ok") {
+	// 				$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+name+"</span>")
+	// 			}else{
+	// 				alert(res.data)
+	// 				$('#'+id).parent().html("<span onclick='new_update("+id+")' id='"+id+"'>"+res.old_name+"</span>")
+	// 			}
 				
-			}
-		})
-	}
+	// 		}
+	// 	})
+	// }
 	
 	
 </script>

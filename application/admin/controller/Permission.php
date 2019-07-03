@@ -30,7 +30,7 @@ class Permission extends Common
 		// $rbac=new Rbac();
 		// $arr=$rbac->getPermission([]);
 		//查询所有的权限和权限的分类名字
-		$arr=Db::query("select p.path,p.id,p.name as p_name,pc.name from permission as p join permission_category as pc on p.category_id=pc.id");
+		$arr=Db::query("select p.path,p.id,p.name as p_name,pc.name,p.description from permission as p join permission_category as pc on p.category_id=pc.id");
 		$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		echo json_encode($js);
 	}
@@ -50,26 +50,42 @@ class Permission extends Common
     	$path=Request::post('path');
     	$category=Request::post('category');
     	$token=Request::post('token');
-    	$select_arr=$rbac->getPermission([['name', '=', $name]]);
+    	$my_description=Request::post('my_description');
+    	$arr=Db::query("select * from permission where name='$name' or path='$path'");
     	//逻辑判断如果不修改权限名字是否是自己
-	    	if (!empty($select_arr)&&$select_arr[0]['id']==$id) {
-	    		$arr=Db::query("update permission set name='$name',category_id=$category,path='$path' where id=$id");
-		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
-		    	echo json_encode($js);
-	    	}elseif (!empty($select_arr)&&$select_arr[0]['id']!=$id) {
-	    		$js=['code'=>'0','status'=>'error','data'=>'权限名字已存在！'];
-		    	echo json_encode($js);
-	    	}elseif (empty($select_arr)) {
-	    		//当所有验证都通过之后验证token
-	    		if ($token!=Session::get('token')) {
+    	//1.判断name和path在库中有没有重复的
+    	//2.假如有重复的将他们的ID取出来跟接过来的ID进行比对
+    	//3.六种可能  1 name相同但是ID不同  2 name相同且ID相等 3 path相同但ID不同 4 path相同且ID相同 5 name和path的ID都不相等  6 都相等
+    	//4.修改成功的  2 4 6
+    	if ($token!=Session::get('token')) {
 		    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
 		        	echo json_encode($js);
 		        	die;
-		    	}
-	    		$arr=Db::query("update permission set name='$name',category_id=$category,path='$path' where id=$id");
+		    }
+    	if (empty($arr)) {
+				$arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
 		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		    	echo json_encode($js);
-	    	}
+    	}else{
+    		foreach ($arr as $key => $value) {
+    			if ($value['id']!=$id) {
+    				if ($value['name']==$name) {
+    					$js=['code'=>'0','status'=>'error','data'=>'权限名字已存在!'];
+		    			echo json_encode($js);
+		    			die;
+    				}else{
+    					$js=['code'=>'0','status'=>'error','data'=>'权限路径已存在!'];
+		    			echo json_encode($js);
+		    			die;
+    				}
+    			}else{
+	    			$arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
+			    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
+			    	echo json_encode($js);
+    			}
+    		}
+    	}
+
     }
     public function del_permission()
     {
@@ -90,6 +106,7 @@ class Permission extends Common
     	$cate=Request::post('cate');
     	$path=Request::post('path');
     	$token=Request::post('token');
+    	$description=Request::post('description');
     	if ($token!=Session::get('token')) {
     		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
         	echo json_encode($js);
@@ -124,7 +141,7 @@ class Permission extends Common
         $rbac=new Rbac;
         $arr=$rbac->createPermission([
 		    'name' => $name,
-		    'description' => '文章列表查询',
+		    'description' => $description,
 		    'status' => 1,
 		    'type' => 1,
 		    'category_id' => $cate,
@@ -193,4 +210,13 @@ class Permission extends Common
 		    	echo json_encode($js);
 	    	}
     }	
+    // public function test()
+    // {
+    // 	$a = array();
+    // 	$b="1";
+    // 	if ($b=="1") {
+    // 		$a=["nihao","ok"];
+    // 	}
+    // 	var_dump($a);
+    // }
 }
