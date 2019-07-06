@@ -1,0 +1,413 @@
+{include file="header"}
+<style type="text/css">
+	.fade {opacity: 0;
+	-webkit-transition: opacity .15s linear;
+	-o-transition: opacity .15s linear;
+	transition: opacity .15s linear}
+.fade.in {opacity: 1}
+.modal-open {overflow: hidden}
+.modal{ position:fixed; left:0; top:30%; right:0; bottom:0; z-index:1040; display:none; overflow:hidden;-webkit-overflow-scrolling:touch; outline:0}
+.modal.fade .modal-dialog{
+	-webkit-transition: -webkit-transform .3s ease-out;
+	-o-transition: -o-transform .3s ease-out;
+	transition: transform .3s ease-out;
+	-webkit-transform: translate(0,-50%);
+	-ms-transform: translate(0,-50%);
+	-o-transform: translate(0,-50%);
+	transform: translate(0,-50%)}
+.modal.in .modal-dialog {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	-o-transform: translate(0, 0);
+	transform: translate(0, 0)}
+.modal-open .modal {overflow-x: hidden;overflow-y: auto}
+	.modal-backdrop {position: fixed;top: 0;right: 0;bottom: 0;left: 0;background-color: #000}
+	.modal-backdrop.fade {filter: alpha(opacity=0);opacity: 0}
+	.modal-backdrop.in {filter: alpha(opacity=50);opacity: .5}
+	.modal-dialog {position: relative;width: auto;margin: 10px}
+	.modal-content{position: relative;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+		-webkit-background-clip: padding-box;
+		background-clip: padding-box; 
+		-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+		box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+	
+		.modal-header {min-height: 16.42857143px;padding: 15px;border-bottom: 1px solid #eee; position:relative}
+		.modal-header .close{position:absolute; right:10px; top:10px}
+		.modal-header h3,.modal-header .modal-title{margin:0; padding:10px 0; font-size:16px}
+	
+		.modal-body {position:relative;padding: 15px;overflow-y:visible;word-break:break-all}
+			.modal-form {margin-bottom: 0}
+	
+		.modal-footer {padding:15px;margin-bottom: 0;text-align: right;background-color: #f5f5f5;border-top: 1px solid #eee;*zoom: 1}
+		.modal-footer:before,.modal-footer:after {display: table;content: ""}
+		.modal-footer:after {clear: both}
+		.modal-footer .btn + .btn {margin-left: 5px;margin-bottom: 0}
+		.modal-footer .btn-group .btn + .btn {margin-left: -1px}
+		.modal-footer .btn-block + .btn-block {margin-left: 0}
+		
+	.modal-scrollbar-measure {position: absolute;top: -9999px;width: 50px;height: 50px;overflow: scroll}
+	
+	.radius .modal-content{ border-radius:6px}
+	.radius .modal-footer{ border-bottom-left-radius:6px; border-bottom-right-radius:6px}
+	@media (min-width: 768px) {
+		.modal-dialog {width: 600px;margin: 30px auto}
+		.modal-content {-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);box-shadow: 0 5px 15px rgba(0, 0, 0, .5)}
+		.modal-sm {width: 300px}
+	}
+	@media (min-width: 992px) {
+		.modal-lg {width: 900px}
+	}
+ 
+.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
+#phone{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+#re_password{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+#name{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+#password{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+#up_phone{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+/*#re_password{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}*/
+#up_name{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+#up_password{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 7px 7px;
+    width: 300px;
+    font-size: 14px;
+}
+</style>
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页
+		<span class="c-gray en">&gt;</span>
+		管理员管理
+		<span class="c-gray en">&gt;</span>
+		管理员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a> </nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l"> <a href="javascript:;" onclick="del_more()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="add_user()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a> </span>
+				<span class="r">共有数据：<strong>54</strong> 条</span>
+			</div>
+			<table class="table table-border table-bordered table-bg">
+				<thead>
+					<tr>
+						<th scope="col" colspan="9">员工列表</th>
+					</tr>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="40">ID</th>
+						<th width="150">登录名</th>
+						<th width="90">角色</th>
+						<th width="130">手机</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				<tbody id="idid">
+					
+					
+				</tbody>
+			</table>
+			<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title">请在下面进行添加</h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();"></a>
+						</div>
+						<div class="modal-body">
+							<!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
+						<!-- <input type="text" value="" id="up_role_id" hidden=""> -->
+							用户名:<input type="text" value="" id="name">
+							<br>
+							
+							密石马:<input type="text" value="" id="password"><span id="name_er"></span>
+							<br>
+							
+							重密码:<input type="text" value="" id="re_password"><span id="password_er"></span>
+							<br>
+							
+							手机号:<input type="text" value="" id="phone"><span id="phone_er"></span>
+							<br>
+							
+							角色名:<select id="role">
+								
+							</select>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" onclick="add_ok()">确定</button>
+							<input type="hidden" id="__token__" value="{$Request.token}" />
+							<button class="btn" data-dismiss="modal" aria-hidden="true" >关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title">请在下面进行添加</h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();"></a>
+						</div>
+						<div class="modal-body">
+							<input type="text" value="" id="up_id" hidden="">
+						<!-- <input type="text" value="" id="up_role_id" hidden=""> -->
+							用户名:<input type="text" value="" id="up_name">
+							<br>
+							
+							密石马:<input type="text" value="" id="up_password"><span id="name_er"></span>
+							<br>
+							
+							手机号:<input type="text" value="" id="up_phone"><span id="phone_er"></span>
+							<br>
+							
+							角色名:<select id="role_up">
+								
+							</select>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" onclick="up_ok()">确定</button>
+							<button class="btn" data-dismiss="modal" aria-hidden="true" >关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+{include file="footer"}
+<script type="text/javascript">
+	function list() {
+		$.ajax({
+			url:"{:url('user/list')}",
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				tr=''
+				for (var i = 0; i < arr.length; i++) {
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i]['id']+"' name='mycheck'></td><td>"+arr[i]['id']+"</td><td>"+arr[i]['user_name']+"</td><td>"+arr[i]['name']+"</td><td>"+arr[i]['mobile']+"</td><td class='td-manage'> <a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='up_user("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='mydel("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+				}
+				$("#idid").html(tr)
+				// console.log(res)
+			}
+		})
+	}
+	list()
+	function add_user() {
+		$.ajax({
+			url:"{:url('user/addUser')}",
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				option=''
+				for (var i = 0; i < arr.length; i++) {
+					option=option+"<option value='"+arr[i]['id']+"'>"+arr[i]['name']+"</option>"
+				}
+				$("#role").html(option)
+				$("#modal-demo").modal("show")
+			}
+		})
+	}
+	function add_ok() {
+		var __token__=$("#__token__").val()
+		var name=$("#name").val()
+		var password=$("#password").val()
+		var re_password=$("#re_password").val()
+		var phone=$("#phone").val()
+		var role_id=$("#role").val()
+		$.ajax({
+			url:"{:url('user/add_action')}",
+			data:{
+				name:name,
+				password:password,
+				re_password:re_password,
+				phone:phone,
+				role_id:role_id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.code=="0") {
+					alert(res.data)
+					list()
+					$("#modal-demo").modal("hide")
+				}else if (res.code=="1") {
+					$('#name_er').html(res.data)
+				}else if (res.code=="3") {
+					$('#password_er').html(res.data)
+				}else if (res.code=="4") {
+					$('#phone_er').html(res.data)
+				}
+			}
+		})
+		token_shua()
+	}
+	 function up_user(id) {
+
+		$.ajax({
+			url:"{:url('user/up_user')}",
+			data:{
+				id:id
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				u_arr=res.u_arr
+				ur_arr=res.ur_arr
+				r_arr=res.r_arr
+				all_role=res.all_role
+				sele=''
+				option=''
+				$("#up_name").val(u_arr[0]['user_name'])
+				$("#up_password").val(u_arr[0]['password'])
+				$("#up_phone").val(u_arr[0]['mobile'])
+				$("#up_id").val(u_arr[0]['id'])
+				for (var i = 0; i < all_role.length; i++) {
+					if (all_role[i].id==ur_arr[0]['role_id']) {
+						sele="<option value='"+all_role[i].id+"' selected>"+all_role[i].name+"</option>"
+					}else{
+						option=option+"<option value='"+all_role[i].id+"'>"+all_role[i].name+"</option>"
+					}
+				}
+				new_option=sele+option
+				$("#role_up").html(new_option)
+				$("#modal").modal("show")
+			}
+		})
+	 }
+	 function up_ok() {
+	 	var __token__=$("#__token__").val()
+	 	var id=$("#up_id").val()
+	 	var name=$("#up_name").val()
+		var password=$("#up_password").val()
+		var mobile=$("#up_phone").val()
+		var role_id=$("#role_up").val()
+	 	$.ajax({
+	 		url:"{:url('user/up_action')}",
+	 		data:{
+	 			id:id,
+	 			name:name,
+	 			password:password,
+	 			mobile:mobile,
+	 			role_id:role_id,
+	 			__token__:__token__
+	 		},
+	 		type:'post',
+	 		dataType:'json',
+	 		success:function (res) {
+	 			if (res.status=="ok") {
+	 				alert(res.data)
+	 				list()
+	 				$("#modal").modal("hide")
+	 			}else{
+	 				alert(res.data)
+	 			}
+	 		}
+	 	})
+	 	token_shua()
+	 }
+	 function mydel(id) {
+	 	var __token__=$("#__token__").val()
+	 	$.ajax({
+	 		url:"{:url('user/del_one')}",
+	 		data:{
+	 			id:id,
+	 			__token__:__token__
+	 		},
+	 		type:'post',
+	 		dataType:'json',
+	 		success:function (res) {
+	 			list()
+	 			alert(res.data)
+	 		}
+	 	})
+	 	token_shua()
+	 }
+	 function del_more() {
+	 	var __token__=$("#__token__").val()
+	 	var all_check=document.getElementsByName('mycheck')
+	 	arr = [];
+	    for(k in all_check){
+	        if(all_check[k].checked)
+	            arr.push(all_check[k].value);
+	    }
+	 	var id=arr.join(",")
+	 	$.ajax({
+	 		url:"{:url('user/del_more')}",
+	 		data:{
+	 			id:id,
+	 			__token__:__token__
+	 		},
+	 		type:'post',
+	 		dataType:'json',
+	 		success:function (res) {
+	 			alert(res.data)
+	 			list()
+	 		}
+	 	})
+	 	token_shua()
+	 }
+	 function token_shua() {
+	 	$.ajax({
+	 		url:"{:url('common/token')}",
+	 		dataType:'json',
+	 		success:function (res) {
+	 			$("#__token__").val(res.token)
+	 		}
+	 	})
+	 }
+</script>

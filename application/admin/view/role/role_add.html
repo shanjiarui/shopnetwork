@@ -1,0 +1,98 @@
+{include file="header"}
+
+<article class="cl pd-20">
+	<form action="" method="post" class="form form-horizontal" id="form-admin-role-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="在这里输入角色名" id="roleName" name="roleName" datatype="*4-16" nullmsg="角色名不能为空">
+			</div>
+		</div>
+		<div style="text-align: center">
+		<span id="name_status" style="color: red">&nbsp</span>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">备注：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="在这里输入角色描述" id="description"  name="" datatype="*4-50" nullmsg="角色描述不能为空">
+			</div>
+		</div>	
+		<div style="text-align: center">	
+		<span id="permission_status" style="color: red">&nbsp</span>
+		</div>
+		<div class="row cl">
+			<input type="hidden" id="__token__" value="{$Request.token}" />
+			<label class="form-label col-xs-4 col-sm-3">网站角色：</label>
+			<div class="formControls col-xs-8 col-sm-9" id="my_permission">
+				<span id="permission_status" style="color: red"></span>
+				<dl class="permission-list" id="all_permission">
+
+				</dl>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input type="button" class="btn btn-success radius" id="admin-role-save" name="admin-role-save" onclick="add_role_action()" value="确定"><i class="icon-ok"></i> 
+			</div>
+		</div>
+	</form>
+</article>
+{include file='footer'}
+<script type="text/javascript">
+	function all_permission() {
+		$.ajax({
+			url:"{:url('role/all_permission')}",
+			dataType:'json',
+			success:function (res) {
+				arr = res.data
+				head=''
+				$.each( arr, function( key, val ) {
+					head=head+"<dt><label><input type='checkbox' value='' name='user-Character-0' id='user-Character-0'>"+key+"</label><br></dt><dd>"
+					$.each( val, function( key1, val1 ) {
+					head=head+"<label><input type='checkbox' value='"+key1+"' name='all_permission' id='user-Character-0'>"+val1+"</label>&nbsp&nbsp&nbsp"
+					} );
+					head=head+"</dd>"
+
+				} );
+				$("#all_permission").html(head)
+			}
+		})
+	}
+	all_permission()
+
+	function add_role_action() {
+		var __token__=$("#__token__").val()
+		var name=$("#roleName").val()
+		var description=$("#description").val()
+		var k=document.getElementsByName('all_permission')
+		var a=''
+		for (var i = 0; i < k.length; i++) {
+			if (k[i].checked) {
+				a=a+","+k[i].value
+			}
+		}
+		$.ajax({
+			url:"{:url('role/role_add_action')}",
+			data:{
+				permission:a,
+				name:name,
+				description:description,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=="ok") {
+					alert(res.data)
+					location.href="{:url('role/role')}"
+				}else if(res.code=="0"){
+					$('#permission_status').html(res.data)
+					$('#name_status').html("&nbsp")
+				}else{
+					$('#name_status').html(res.data)
+					$('#permission_status').html("&nbsp")
+				}
+			}
+		})
+	}
+</script>

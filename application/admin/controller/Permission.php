@@ -66,26 +66,48 @@ class Permission extends Common
 				$arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
 		    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		    	echo json_encode($js);
-    	}else{
-    		foreach ($arr as $key => $value) {
-    			if ($value['id']!=$id) {
-    				if ($value['name']==$name) {
-    					$js=['code'=>'0','status'=>'error','data'=>'权限名字已存在!'];
-		    			echo json_encode($js);
-		    			die;
-    				}else{
-    					$js=['code'=>'0','status'=>'error','data'=>'权限路径已存在!'];
-		    			echo json_encode($js);
-		    			die;
-    				}
-    			}else{
-	    			$arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
-			    	$js=['code'=>'0','status'=>'ok','data'=>$arr];
-			    	echo json_encode($js);
-    			}
-    		}
-    	}
-
+    	}elseif (count($arr)==1) {
+                if ($arr[0]['id']!=$id) {
+                    if ($value['name']==$name) {
+                        $js=['code'=>'0','status'=>'error','data'=>'权限名字已存在!'];
+                        echo json_encode($js);
+                        die;
+                    }else{
+                        $js=['code'=>'0','status'=>'error','data'=>'权限路径已存在!'];
+                        echo json_encode($js);
+                        die;
+                    }
+                }else{
+                    $arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
+                    $js=['code'=>'0','status'=>'ok','data'=>$arr];
+                    echo json_encode($js);
+                }
+        }elseif (count($arr)==2) {
+                $new_arr=[];
+                for ($i=0; $i < 2; $i++) { 
+                    if ($arr[$i]['id']!=$id) {
+                        $new_arr[]=$arr[$i];
+                    }
+                }
+                if (empty($new_arr)) {
+                    $arr=Db::query("update permission set name='$name',category_id=$category,path='$path',description='$my_description' where id=$id");
+                    $js=['code'=>'0','status'=>'ok','data'=>$arr];
+                }elseif (count($new_arr)==1) {
+                    if ($new_arr[0]['name']==$name) {
+                        $js=['code'=>'0','status'=>'error','data'=>'权限名字已存在!'];
+                        echo json_encode($js);
+                        die;
+                    }else{
+                        $js=['code'=>'0','status'=>'error','data'=>'权限路径已存在!'];
+                        echo json_encode($js);
+                        die;
+                    }
+                }elseif (count($new_arr)==2) {
+                        $js=['code'=>'0','status'=>'error','data'=>'权限名字已存在!'];
+                        echo json_encode($js);
+                        die;
+                }
+        }
     }
     public function del_permission()
     {

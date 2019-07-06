@@ -21,4 +21,10 @@ class Common extends Controller
 		$js=['token'=>$new_token];
 		echo json_encode($js);
 	}
+	public function token()
+	{	
+		$token = $this->request->token('__token__', 'sha1');
+        $arr=['token'=>$token];
+        echo json_encode($arr);
+	}
 }
