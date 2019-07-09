@@ -80,60 +80,26 @@ class User extends Common
         	die;
         }
         $name=$data['name'];
-        $phone=$data['mobile'];
+        // $phone=$data['mobile'];
         $id=$data['id'];
         $password=$data['password'];
         $role_id=$data['role_id'];
-        $arr=Db::query("select * from user where user_name='$name' or mobile='$phone'");
+        $arr=Db::query("select * from user where user_name='$name'");
         if (empty($arr)) {
-        	Db::query("update user set user_name='$name',password='$password',mobile='$phone' where id=$id");
-        	Db::query("delete from user_role where id=$id");
+        	Db::query("update user set user_name='$name',password='$password',mobile='' where id=$id");
+        	Db::query("delete from user_role where user_id=$id");
         	Db::query("insert into user_role (user_id,role_id) values ($id,$role_id)");
         	$js=['status'=>'ok','data'=>'修改成功!'];
         	echo json_encode($js);
-        }elseif (count($arr)==1) {
+        }else{
         	if ($arr[0]['id']==$id) {
-        		Db::query("update user set user_name='$name',password='$password',mobile='$phone' where id=$id");
-        		Db::query("delete from user_role where user_id=$id");
-        		Db::query("insert into user_role (user_id,role_id) values ($id,$role_id)");
-	        	$js=['status'=>'ok','data'=>'修改成功!'];
-        		echo json_encode($js);
-        	}else{
-        		if ($arr[0]['user_name']==$name) {
-        			$js=['code'=>'3','status'=>'error','data'=>'此用户已存在!'];
-        			echo json_encode($js);
-        			die;
-        		}else{
-        			$js=['code'=>'4','status'=>'error','data'=>'手机号已被绑定!'];
-        			echo json_encode($js);
-        			die;
-        		}
-        	}
-        }elseif (count($arr)==2) {
-        	$new=[];
-        	for ($i=0; $i < 2; $i++) { 
-        		if ($arr[$i]['id']!=$data['id']) {
-        			$new[]=$arr[$i];
-        		}
-        	}
-        	if (empty($new)) {
-        		Db::query("update user set user_name='$name',password='$password',mobile='$phone' where id=$id");
-	        	Db::query("delete from user_role where id=$id");
+        		Db::query("update user set user_name='$name',password='$password',mobile='' where id=$id");
+	        	Db::query("delete from user_role where user_id=$id");
 	        	Db::query("insert into user_role (user_id,role_id) values ($id,$role_id)");
 	        	$js=['status'=>'ok','data'=>'修改成功!'];
-        		echo json_encode($js);
-        	}elseif (count($new)==1) {
-        		if ($new[0]['user_name']==$name) {
-        			$js=['code'=>'0','status'=>'error','data'=>'此用户已存在!'];
-        			echo json_encode($js);
-        			die;
-        		}else{
-        			$js=['code'=>'1','status'=>'error','data'=>'手机号已被绑定!'];
-        			echo json_encode($js);
-        			die;
-        		}
+	        	echo json_encode($js);
         	}else{
-        		$js=['code'=>'2','status'=>'error','data'=>'此用户已存在!'];
+        		$js=['code'=>'3','status'=>'error','data'=>'此用户已存在!'];
         		echo json_encode($js);
         	}
         }

@@ -152,7 +152,7 @@
 						<th width="40">ID</th>
 						<th width="150">登录名</th>
 						<th width="90">角色</th>
-						<th width="130">手机</th>
+						<!-- <th width="130">手机</th> -->
 						<th width="100">操作</th>
 					</tr>
 				</thead>
@@ -235,13 +235,19 @@
 			url:"{:url('user/list')}",
 			dataType:'json',
 			success:function (res) {
-				arr=res.data
-				tr=''
-				for (var i = 0; i < arr.length; i++) {
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i]['id']+"' name='mycheck'></td><td>"+arr[i]['id']+"</td><td>"+arr[i]['user_name']+"</td><td>"+arr[i]['name']+"</td><td>"+arr[i]['mobile']+"</td><td class='td-manage'> <a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='up_user("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='mydel("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+				console.log(res)
+				if (res.code=='10001') {
+					alert('没有权限!')
+				}else{
+					arr=res.data
+					tr=''
+					for (var i = 0; i < arr.length; i++) {
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i]['id']+"' name='mycheck'></td><td>"+arr[i]['id']+"</td><td>"+arr[i]['user_name']+"</td><td>"+arr[i]['name']+"</td><td class='td-manage'> <a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='up_user("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='mydel("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					}
+					$("#idid").html(tr)
+					// console.log(res)
 				}
-				$("#idid").html(tr)
-				// console.log(res)
+				
 			}
 		})
 	}
@@ -349,6 +355,7 @@
 	 		type:'post',
 	 		dataType:'json',
 	 		success:function (res) {
+	 			token_shua()
 	 			if (res.status=="ok") {
 	 				alert(res.data)
 	 				list()
@@ -358,7 +365,7 @@
 	 			}
 	 		}
 	 	})
-	 	token_shua()
+	 	
 	 }
 	 function mydel(id) {
 	 	var __token__=$("#__token__").val()

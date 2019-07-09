@@ -5,6 +5,7 @@ use think\Controller;
 use think\captcha\Captcha;
 use think\Db;
 use Request;
+use gmars\rbac\Rbac;
 use Session;
 class Login extends Controller
 {
@@ -32,9 +33,16 @@ class Login extends Controller
 		 	die;
 		}
 		$js=['code'=>'1','status'=>'ok','data'=>'登录成功！'];
-		Session::set('id',$arr['0']['id']);
+		Session::set('id',$arr[0]['id']);
 		Session::set('name',$name);
+		$rbac=new Rbac;
+        $rbac->cachePermission($arr[0]['id']);
 		echo json_encode($js);
+    }
+    public function out()
+    {
+    	Session::clear();
+    	return $this->redirect('Login/login');
     }
     
 }

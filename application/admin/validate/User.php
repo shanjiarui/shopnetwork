@@ -14,7 +14,7 @@ class User extends Validate
      */	
 	protected $rule = [ 
         'name'  =>  'require|max:20|min:5|token',
-        'password' => 'require|max:20|min:5',
+        'password' => 'require|max:20|min:1',
         'phone'=>'number|length:11',
     ];
     
@@ -30,7 +30,7 @@ class User extends Validate
         'name.min' => '姓名不能小于5字节！',
         'password.require' => '密码不能为空!',
         'password.max' => '密码不能超过20字节!',
-        'password.min' => '分组描述不能超过5字节!',
+        'password.min' => '密码不能小于1字节!',
         'phone.number'=>'手机号必须是纯数字!',
         'phone.length'=>'手机号必须是11位!',
     ];

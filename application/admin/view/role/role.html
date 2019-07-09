@@ -158,17 +158,21 @@
 		url:"{:url('role/all_permission')}",
 		dataType:'json',
 		success:function (res) {
-			p=res.data
-			tr=''
-			$.each(p,function (key,val) {
-				tr=tr+"<div style='background-color:pink'><span  style='color:blue'>"+key+"</span></div><div style='background-color:pink'>"
-				$.each(val,function (key1,val1) {
-					tr=tr+"<input type='checkbox' value='"+key1+"' id='ii"+key1+"' name='per' class='mycheckbox'>"+val1+"&nbsp&nbsp&nbsp"
+			if (res.code=='10001') {
+					alert("没有权限!")
+			}else{
+				p=res.data
+				tr=''
+				$.each(p,function (key,val) {
+					tr=tr+"<div style='background-color:pink'><span  style='color:blue'>"+key+"</span></div><div style='background-color:pink'>"
+					$.each(val,function (key1,val1) {
+						tr=tr+"<input type='checkbox' value='"+key1+"' id='ii"+key1+"' name='per' class='mycheckbox'>"+val1+"&nbsp&nbsp&nbsp"
+					})
+					tr=tr+'</div>'
 				})
-				tr=tr+'</div>'
-			})
 
-			$("#all").html(tr)
+				$("#all").html(tr)
+			}
 		}
 	})
 	function list() {
@@ -176,12 +180,16 @@
 			url:"{:url('role/list')}",
 			dataType:'json',
 			success:function (res) {
-				var arr=res.data
-				var tr=''
-				for (var i = 0; i < arr.length; i++) {
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i]['id']+"' name='okk'></td><td>"+arr[i]['id']+"</td><td>"+arr[i]['name']+"</td><td>"+arr[i]['description']+"</td><td class='f-14'><a title='编辑' href='javascript:;' style='text-decoration:none' onclick='up_role("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='my_del("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+				if (res.code=='10001') {
+					alert("没有权限!")
+				}else{
+					var arr=res.data
+					var tr=''
+					for (var i = 0; i < arr.length; i++) {
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i]['id']+"' name='okk'></td><td>"+arr[i]['id']+"</td><td>"+arr[i]['name']+"</td><td>"+arr[i]['description']+"</td><td class='f-14'><a title='编辑' href='javascript:;' style='text-decoration:none' onclick='up_role("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' onclick='my_del("+arr[i]['id']+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					}
+					$('#ii').html(tr)
 				}
-				$('#ii').html(tr)
 			}
 		})
 	}
@@ -199,17 +207,22 @@
 			dataType:'json',
 			success:function (res) {
 				console.log(res)
-				r=res.role
-				r_p=res.role_permission
-				tr=''
-				$("#up_role_id").val(r[0].id)
-				$("#up_role").val(r[0].name)
-				$("#role_description").val(r[0].description)
-				var all_select=document.getElementsByName("per");
-				$.each(r_p,function (key,val) {
-					 $("#ii"+val.permission_id).prop("checked", true);
-				})
-				$("#modal-demo").modal("show")
+				if (res.code=='10001') {
+					alert("没有权限!")
+				}else{
+					r=res.role
+					r_p=res.role_permission
+					tr=''
+					$("#up_role_id").val(r[0].id)
+					$("#up_role").val(r[0].name)
+					$("#role_description").val(r[0].description)
+					var all_select=document.getElementsByName("per");
+					$.each(r_p,function (key,val) {
+						 $("#ii"+val.permission_id).prop("checked", true);
+					})
+					$("#modal-demo").modal("show")
+				}
+				
 			}
 		})
 	}
@@ -238,15 +251,19 @@
 	    	type:'post',
 	    	dataType:'json',
 	    	success:function (res) {
-	    		if (res.code=="0") {
-	    			alert(res.data)
-	    		}else if(res.code=="1"){
-	    			alert(res.data)
+	    		if (res.code=="10001") {
+	    			alert("咩有权限!")
 	    		}else{
+	    			if (res.code=="0") {
 	    			alert(res.data)
-	    			list()
-	    			$("#modal-demo").modal("hide")
-	    		}
+		    		}else if(res.code=="1"){
+		    			alert(res.data)
+		    		}else{
+		    			alert(res.data)
+		    			list()
+		    			$("#modal-demo").modal("hide")
+		    		}
+	    		}	
 	    	}
 	    })
 	}function my_del(id) {
@@ -260,12 +277,17 @@
 			type:'post',
 			dataType:'json',
 			success:function (res) {
-				if (res.status=='ok') {
+				if (res.code=="10001") {
+					alert("没有权限!")
+				}else{
+					if (res.status=='ok') {
 					alert('删除成功!')
 					list()
-				}else{
-					alert(res.data)
+					}else{
+						alert(res.data)
+					}
 				}
+				
 			}
 		})
 	}
