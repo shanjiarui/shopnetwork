@@ -13,9 +13,6 @@ class Permissioncate extends Common
 {
 	public function permissioncate()
 	{
-		$token=uniqid();
-		Session::set('token',$token);
-		$this->assign('token',$token);
 		return $this->fetch('permission_cate/permission_cate');
 	}
 	public function list($value='')
@@ -30,22 +27,13 @@ class Permissioncate extends Common
 	}
 	public function add_action()
     {
-    	$name=Request::post('name');
-    	$token=Request::post('token');
-    	$description=Request::post('description');
-    	if ($token!=Session::get('token')) {
-    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
-        	echo json_encode($js);
-        	die;
-    	}
+        $data=Request::post();
+    	$name=$data['name'];
+    	$description=$data['description'];
     	//传值过来先使用验证器进行验证，类似正则表达式
         $validate = new \app\admin\validate\Permissioncate;
-         $data = [
-            'name'  => $name,
-            'description' => $description
-        ];
         if (!$validate->check($data)) {
-        	$js=['code'=>'0','status'=>'error','data'=>$validate->getError()];
+        	$js=['code'=>'120','status'=>'error','data'=>$validate->getError()];
         	echo json_encode($js);
         	die;
         }
@@ -74,13 +62,15 @@ class Permissioncate extends Common
     }
     public function del_permission_category()
     {
-    	$token=Request::post('token');
-    	$id=Request::post('id');
-    	if ($token!=Session::get('token')) {
-    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
-        	echo json_encode($js);
-        	die;
-    	}
+
+    	$data=Request::post();
+    	$id=$data['id'];
+        $validate = new \app\admin\validate\Product_del;
+        if (!$validate->check($data)) {
+            $js=['code'=>'120','status'=>'error','data'=>$validate->getError()];
+            echo json_encode($js);
+            die;
+        }
     	$arr=Db::query("delete from permission_category where id=$id");
     	$js=['code'=>'0','status'=>'ok','data'=>$arr];
     	echo json_encode($js);
@@ -95,10 +85,17 @@ class Permissioncate extends Common
     public function up_permissioncate_action()
     {
     	$rbac=new Rbac();
-    	$id=Request::post('id');
-    	$name=Request::post('name');
-    	$token=Request::post('token');
-    	$my_description=Request::post('my_description');
+        $data=Request::post();
+    	$id=$data['id'];
+    	$name=$data['name'];
+    	// $__token__=Request::post('__token__');
+    	$my_description=$data['my_description'];
+        $validate = new \app\admin\validate\Permissioncate_up;
+        if (!$validate->check($data)) {
+            $js=['code'=>'120','status'=>'error','data'=>$validate->getError()];
+            echo json_encode($js);
+            die;
+        }
     	$arr=Db::query("select * from permission_category where name='$name'");
     	if (empty($arr)) {
     		$arr=Db::query("update permission_category set name='$name',description='$my_description' where id=$id");
@@ -118,17 +115,12 @@ class Permissioncate extends Common
     public function all_del()
     {
     	$id=Request::post('id');
-    	$token=Request::post('token');
+    	$__token__=Request::post('__token__');
     	$arr_id=explode(",", $id);
     	if (empty($arr_id[1])) {
     		$js=['code'=>'0','status'=>'error','data'=>"请选择要删除的权限!"];
 			echo json_encode($js);
 			die;
-    	}
-    	if ($token!=Session::get('token')) {
-    		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
-        	echo json_encode($js);
-        	die;
     	}
     	for ($i=1; $i < count($arr_id) ; $i++) { 
     		$id=$arr_id[$i];
@@ -137,7 +129,7 @@ class Permissioncate extends Common
     	$js=['code'=>'0','status'=>'ok','data'=>"删除成功!"];
 		echo json_encode($js);
     }
-    // 	if ($token!=Session::get('token')) {
+    // 	if ($__token__!=Session::get('__token__')) {
 		  //   		$js=['code'=>'120','status'=>'error','data'=>"令牌验证失败!"];
 		  //       	echo json_encode($js);
 		  //       	die;

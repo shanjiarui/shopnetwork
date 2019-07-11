@@ -1,0 +1,266 @@
+{include file="header"}
+<style type="text/css">
+.fade {opacity: 0;
+	-webkit-transition: opacity .15s linear;
+	-o-transition: opacity .15s linear;
+	transition: opacity .15s linear}
+.fade.in {opacity: 1}
+.modal-open {overflow: hidden}
+.modal{ position:fixed; left:0; top:30%; right:0; bottom:0; z-index:1040; display:none; overflow:hidden;-webkit-overflow-scrolling:touch; outline:0}
+.modal.fade .modal-dialog{
+	-webkit-transition: -webkit-transform .3s ease-out;
+	-o-transition: -o-transform .3s ease-out;
+	transition: transform .3s ease-out;
+	-webkit-transform: translate(0,-50%);
+	-ms-transform: translate(0,-50%);
+	-o-transform: translate(0,-50%);
+	transform: translate(0,-50%)}
+.modal.in .modal-dialog {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	-o-transform: translate(0, 0);
+	transform: translate(0, 0)}
+.modal-open .modal {overflow-x: hidden;overflow-y: auto}
+	.modal-backdrop {position: fixed;top: 0;right: 0;bottom: 0;left: 0;background-color: #000}
+	.modal-backdrop.fade {filter: alpha(opacity=0);opacity: 0}
+	.modal-backdrop.in {filter: alpha(opacity=50);opacity: .5}
+	.modal-dialog {position: relative;width: auto;margin: 10px}
+	.modal-content{position: relative;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+		-webkit-background-clip: padding-box;
+		background-clip: padding-box; 
+		-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+		box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+	
+		.modal-header {min-height: 16.42857143px;padding: 15px;border-bottom: 1px solid #eee; position:relative}
+		.modal-header .close{position:absolute; right:10px; top:10px}
+		.modal-header h3,.modal-header .modal-title{margin:0; padding:10px 0; font-size:16px}
+	
+		.modal-body {position:relative;padding: 15px;overflow-y:visible;word-break:break-all}
+			.modal-form {margin-bottom: 0}
+	
+		.modal-footer {padding:15px;margin-bottom: 0;text-align: right;background-color: #f5f5f5;border-top: 1px solid #eee;*zoom: 1}
+		.modal-footer:before,.modal-footer:after {display: table;content: ""}
+		.modal-footer:after {clear: both}
+		.modal-footer .btn + .btn {margin-left: 5px;margin-bottom: 0}
+		.modal-footer .btn-group .btn + .btn {margin-left: -1px}
+		.modal-footer .btn-block + .btn-block {margin-left: 0}
+		
+	.modal-scrollbar-measure {position: absolute;top: -9999px;width: 50px;height: 50px;overflow: scroll}
+	
+	.radius .modal-content{ border-radius:6px}
+	.radius .modal-footer{ border-bottom-left-radius:6px; border-bottom-right-radius:6px}
+	@media (min-width: 768px) {
+		.modal-dialog {width: 600px;margin: 30px auto}
+		.modal-content {-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);box-shadow: 0 5px 15px rgba(0, 0, 0, .5)}
+		.modal-sm {width: 300px}
+	}
+	@media (min-width: 992px) {
+		.modal-lg {width: 900px}
+	}
+ 
+.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
+
+#up_cate_name{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+</style>
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+					在<span id="sp" value='' style="color:blue">请点击下面</span>中添加新的分类
+					<input type="text" class="input-text" style="width:200px" placeholder="分类名称" id="name">
+					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加分类</button>
+			</div>
+			<div class="text-c">
+			<span id="op">&nbsp</span>
+			</div>
+			<table class="table table-border table-bordered table-bg">
+				<tbody id="ii" style=" ">
+				<span  onclick='numberone()' style='color:red'>添加一级分类请点击!</span>
+				</tbody>
+			</table>
+			<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title">请在下面进行修改</h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+						</div>
+						<div class="modal-body">
+							<!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
+						<input type="text" value="" id="up_cate_id" hidden="">
+						<input type="hidden" name="__token__" value="{$Request.token}" id="my_token"/>
+							分类名:<input type="text" value="" id="up_cate_name">
+							<br>
+							<br>
+							父级选择:<select id="up_parent_id">
+														
+									</select>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" onclick="up_action()">确定</button>
+							<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+{include file="footer"}
+<script type="text/javascript">
+	function show() {
+		$.ajax({
+			url:"{:url('product/tree')}",
+			success:function (res) {
+				$('#ii').html(res)
+			}
+		})
+	}
+	show()
+	$(document).ready(function(){
+	  $(document).on('click','li',function(){
+	  	var a=$(this).next().css('display')
+	  	var id=$(this).attr('value')
+	  	var name=$(this).html()
+	  	$("#sp").attr('value',id)
+	  	new_name=name.split("<")[0]
+	  	$("#sp").html(new_name)
+	  	if (a=="none") {
+	  		$(this).next().css('display','block')
+	  	}else{
+	  		$(this).next().css('display','none')
+	  	}
+	    
+	  });
+	});
+	function numberone() {
+		$("#sp").attr('value','0')
+	  	$("#sp").html('一级评论')
+	}
+	function add_action() {
+		var __token__=$('#my_token').val()
+		var p_id=$("#sp").attr('value')
+	  	var name=$("#name").val()
+	  	$.ajax({
+	  		url:"{:url('product/add_action')}",
+	  		data:{
+	  			p_id:p_id,
+	  			name:name,
+	  			__token__:__token__
+	  		},
+	  		type:'post',
+	  		dataType:'json',
+	  		success:function (res) {
+	  			new_token()
+	  			show()
+	  			alert(res.data)
+	  		}
+	  	})
+	}
+	function del_one(id) {
+		var __token__=$('#my_token').val()
+		$.ajax({
+			url:"{:url('product/del_one')}",
+			data:{
+				id:id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='error') {
+					alert(res.data)
+					new_token()
+				}else{
+					new_token()
+					show()
+					$("#sp").attr('value','')
+					$("#sp").html("请点击下面")
+					alert("删除成功!")
+				}
+				
+			}
+		})
+	}
+	function my_update(id) {
+		$.ajax({
+			url:"{:url('product/my_update')}",
+			data:{
+				id:id,
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				
+					arr=res.data
+					ayy=res.all
+					$('#up_cate_id').val(arr[0].cate_id)
+					$('#up_cate_name').val(arr[0].cate_name)
+					option=''
+					op=''
+					for (var i = 0; i < ayy.length; i++) {
+						if (ayy[i].cate_id==arr[0].parent_id) {
+							op="<option value='"+ayy[i].cate_id+"' selected>"+ayy[i].cate_name+"</option>"
+						}else{
+							option=option+"<option value='"+ayy[i].cate_id+"'>"+ayy[i].cate_name+"</option>"
+						}
+					}
+					opt=option+op
+					$('#up_parent_id').html("<option value='0'>一级分类</option>"+opt)
+					$('#modal-demo').modal('show')
+					new_token()
+				
+			}
+		})
+	}
+	function up_action(res) {
+		var __token__=$('#my_token').val()
+		var id=$('#up_cate_id').val()
+		var name=$('#up_cate_name').val()
+		var p_id=$('#up_parent_id').val()
+		$.ajax({
+			url:"{:url('product/up_action')}",
+			data:{
+				id:id,
+				name:name,
+				p_id:p_id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='error') {
+					console.log(res.data)
+					new_token()
+				}else{
+					new_token()
+					show()
+					$('#modal-demo').modal('hide')
+					alert(res.data)
+				}
+			}
+		})
+	}
+	function new_token() {
+		$.ajax({
+			url:"{:url('common/token')}",
+			dataType:'json',
+			success:function (res) {
+				$('#my_token').val(res.token)
+			}
+		})
+	}
+</script>

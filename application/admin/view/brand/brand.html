@@ -1,0 +1,421 @@
+{include file="header"}
+<style type="text/css">
+	.fade {opacity: 0;
+	-webkit-transition: opacity .15s linear;
+	-o-transition: opacity .15s linear;
+	transition: opacity .15s linear}
+.fade.in {opacity: 1}
+.modal-open {overflow: hidden}
+.modal{ position:fixed; left:0; top:30%; right:0; bottom:0; z-index:1040; display:none; overflow:hidden;-webkit-overflow-scrolling:touch; outline:0}
+.modal.fade .modal-dialog{
+	-webkit-transition: -webkit-transform .3s ease-out;
+	-o-transition: -o-transform .3s ease-out;
+	transition: transform .3s ease-out;
+	-webkit-transform: translate(0,-50%);
+	-ms-transform: translate(0,-50%);
+	-o-transform: translate(0,-50%);
+	transform: translate(0,-50%)}
+.modal.in .modal-dialog {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	-o-transform: translate(0, 0);
+	transform: translate(0, 0)}
+.modal-open .modal {overflow-x: hidden;overflow-y: auto}
+	.modal-backdrop {position: fixed;top: 0;right: 0;bottom: 0;left: 0;background-color: #000}
+	.modal-backdrop.fade {filter: alpha(opacity=0);opacity: 0}
+	.modal-backdrop.in {filter: alpha(opacity=50);opacity: .5}
+	.modal-dialog {position: relative;width: auto;margin: 10px}
+	.modal-content{position: relative;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+		-webkit-background-clip: padding-box;
+		background-clip: padding-box; 
+		-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+		box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+	
+		.modal-header {min-height: 16.42857143px;padding: 15px;border-bottom: 1px solid #eee; position:relative}
+		.modal-header .close{position:absolute; right:10px; top:10px}
+		.modal-header h3,.modal-header .modal-title{margin:0; padding:10px 0; font-size:16px}
+	
+		.modal-body {position:relative;padding: 15px;overflow-y:visible;word-break:break-all}
+			.modal-form {margin-bottom: 0}
+	
+		.modal-footer {padding:15px;margin-bottom: 0;text-align: right;background-color: #f5f5f5;border-top: 1px solid #eee;*zoom: 1}
+		.modal-footer:before,.modal-footer:after {display: table;content: ""}
+		.modal-footer:after {clear: both}
+		.modal-footer .btn + .btn {margin-left: 5px;margin-bottom: 0}
+		.modal-footer .btn-group .btn + .btn {margin-left: -1px}
+		.modal-footer .btn-block + .btn-block {margin-left: 0}
+		
+	.modal-scrollbar-measure {position: absolute;top: -9999px;width: 50px;height: 50px;overflow: scroll}
+	
+	.radius .modal-content{ border-radius:6px}
+	.radius .modal-footer{ border-bottom-left-radius:6px; border-bottom-right-radius:6px}
+	@media (min-width: 768px) {
+		.modal-dialog {width: 600px;margin: 30px auto}
+		.modal-content {-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);box-shadow: 0 5px 15px rgba(0, 0, 0, .5)}
+		.modal-sm {width: 300px}
+	}
+	@media (min-width: 992px) {
+		.modal-lg {width: 900px}
+	}
+ 
+.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box; 
+	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
+.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
+#up_permission{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+/*#permission_category{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}*/
+#up_brand{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+#up_url{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 10px 10px;
+    width: 300px;
+    font-size: 14px;
+}
+</style>
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+					<input type="text" class="input-text" style="width:200px" placeholder="品牌名称" id="name">
+					请选择文件：<input type="file" name="ppp" id="myfile">
+					<input type="text" class="input-text" style="width:200px" placeholder="品牌官网" id="my_url">
+					是否展示:&nbsp<input type="radio" name="show" value="1">Yes&nbsp&nbsp<input type="radio" name="show" value="0">No
+					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加品牌</button>
+				</form>
+			</div>
+			<div class="text-c">
+			<span id="op">&nbsp</span>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r" id="ooop"></span> </div>
+			<table class="table table-border table-bordered table-bg">
+				<thead>
+					<tr>
+						<th scope="col" colspan="7">权限节点</th>
+					</tr>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" name="" value=""></th>
+						<th width="40">ID</th>
+						<th width="200">品牌名称</th>
+						<th width="200">品牌logo</th>
+						<th width="200">品牌官网</th>
+						<th width="200">是否上线</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				<tbody id="ii">
+					
+				</tbody>
+			</table>
+			<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title">请在下面进行修改</h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+						</div>
+						<div class="modal-body">
+						<input type="text" value="" id="up_brand_id" hidden="">
+						<input type="hidden" name="__token__" value="{$Request.token}" id="my_token"/>
+							品牌名:<input type="text" value="" id="up_brand">
+							<br>
+							<br>
+							
+							品牌官网:<input type="text" value="" id="up_url">
+							<br>
+							<br>
+							是否展示:<span id="okk"></span>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" onclick="up_ok()">确定</button>
+							<button class="btn" data-dismiss="modal" aria-hidden="true" >关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content radius">
+						<div class="modal-header">
+							<h3 class="modal-title"></h3>
+							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+							<input type="text" id='up_id' value="" hidden="">
+							<div id="drop_area" style="border:3px dashed silver;width:400px; height:200px;text-align: center;">
+							<img id="iiim" style="width:400px; height:200px">
+							将图片拖拽到此
+							↑ 
+							</div>
+							<button onclick="xhr2()" class="btn btn-primary radius" style="position: relative;left:450px;margin-top:-280px">ajax上传</button>  
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+{include file="footer"}
+<script type="text/javascript">
+	function list() {
+		$.ajax({
+			url:"{:url('brand/list')}",
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				tr=''
+				count=arr.length
+				$('#ooop').html("共有数据:&nbsp<strong>"+count+"</strong>&nbsp条")
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i].is_show=='1') {
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].brand_id+"' name='my_input' id='po'></td><td>"+arr[i].brand_id+"</td><td>"+arr[i].brand_name+"</td><td><img src='__STATIC__/img/"+arr[i].brand_logo+"' style='height:33px;width:70px' onclick='up_img("+arr[i].brand_id+")'></td><td>"+arr[i].brand_url+"</td><td>√</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_brand("+arr[i].brand_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_brand("+arr[i].brand_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					}else{
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].brand_id+"' name='my_input' id='po'></td><td>"+arr[i].brand_id+"</td><td>"+arr[i].brand_name+"</td><td><img src='__STATIC__/img/"+arr[i].brand_logo+"' style='height:33px;width:70px' onclick='up_img("+arr[i].brand_id+")'></td><td>"+arr[i].brand_url+"</td><td>×</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_brand("+arr[i].brand_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_brand("+arr[i].brand_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					}
+				}
+				$("#ii").html(tr)
+			}
+		})
+	}
+	list()
+	function up_brand(id) {
+		var __token__=$('#my_token').val()
+		$.ajax({
+			url:"{:url('brand/select_all')}",
+			data:{
+				id:id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				radio=''
+				$('#up_brand').val(arr[0].brand_name)
+				$('#up_url').val(arr[0].brand_url)
+				$('#up_brand_id').val(arr[0].brand_id)
+				if (arr[0].is_show=='1') {
+					radio="&nbsp&nbsp<input type='radio' value='1' name='is_show' checked>Yes&nbsp&nbsp<input type='radio' name='is_show' value='0'>No"
+				}else{
+					radio="&nbsp&nbsp<input type='radio' value='1' name='is_show'>Yes&nbsp&nbsp<input type='radio' name='is_show' value='0' checked>No"
+				}
+				$('#okk').html(radio)
+				$("#modal-demo").modal("show")
+				new_token()
+			}
+		})
+	}
+	function up_ok() {
+		var __token__=$('#my_token').val()
+		var name=$('#up_brand').val()
+		var url=$('#up_url').val()
+		var id=$('#up_brand_id').val()
+		var is_show=$('input:radio:checked').val()
+		$.ajax({
+			url:"{:url('brand/up_action')}",
+			data:{
+				name:name,
+				url:url,
+				id:id,
+				is_show:is_show,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='ok') {
+					alert(res.data)
+					new_token()
+					list()
+					$("#modal-demo").modal("hide")
+				}else{
+					alert(res.data)
+					new_token()
+				}
+			}
+		})
+	}
+	function add_action() {
+		var __token__=$('#my_token').val()
+		var name=$('#name').val()
+		var url=$('#my_url').val()
+		// var logo=$('#logo').val()
+		// var file = $("#file").val();
+		var is_show=$('input:radio:checked').val()
+		var formData = new FormData()
+		formData.append('myfile', $('#myfile')[0].files[0])
+		formData.append('url', url)
+		formData.append('is_show', is_show)
+		formData.append('name', name)
+		formData.append('__token__', __token__);
+		$.ajax({
+			url:"{:url('brand/add_action')}",
+			data:formData,
+			type:'post',
+			contentType: false, // 注意这里应设为false
+            processData: false,
+            cache: false,
+			dataType:'json',
+			success:function (res) {
+				new_token()
+				// console.log(res)
+				list()
+				alert(res.data)
+			}
+		})
+	}
+	function del_brand(id) {
+		var __token__=$('#my_token').val()
+		$.ajax({
+			url:"{:url('brand/del_one')}",
+			data:{
+				id:id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				new_token()
+				list()
+				alert(res.data)
+			}
+		})
+	}
+	function up_img(id) {
+		var __token__=$('#my_token').val()
+		$.ajax({
+			url:"{:url('brand/up_img')}",
+			data:{
+				id:id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='ok') {
+					arr=res.data
+					new_token()
+					$('#up_id').val(arr[0].brand_id)
+					$('#iiim').attr('src','__STATIC__/img/'+arr[0].brand_logo)
+					$('#modal').modal('show')
+				}else{
+					new_token()
+					alert(res.data)
+				}
+				
+			}
+		})
+	}
+	function new_token() {
+		$.ajax({
+			url:"{:url('common/token')}",
+			dataType:'json',
+			success:function (res) {
+				$('#my_token').val(res.token)
+			}
+		})
+	}
+
+	document.addEventListener("drop",function(e){  //拖离   
+    e.preventDefault();      
+	})  
+	document.addEventListener("dragleave",function(e){  //拖后放   
+	    e.preventDefault();      
+	})  
+	document.addEventListener("dragenter",function(e){  //拖进  
+	    e.preventDefault();      
+	})  
+	document.addEventListener("dragover",function(e){  //拖来拖去    
+	    e.preventDefault();      
+	})  
+
+var box = document.getElementById('drop_area'); //拖拽区域     
+box.addEventListener("drop",function(e){           
+    var fileList = e.dataTransfer.files; //获取文件对象    
+    //检测是否是拖拽文件到页面的操作            
+    if(fileList.length == 0){                
+        return false;            
+    }             
+    //拖拉图片到浏览器，可以实现预览功能    
+    //规定视频格式  
+    Array.prototype.S=String.fromCharCode(2);  
+    Array.prototype.in_array=function(e){  
+        var r=new RegExp(this.S+e+this.S);  
+        return (r.test(this.S+this.join(this.S)+this.S));  
+    };  
+    var video_type=["video/mp4","video/ogg"];  
+      
+    //创建一个url连接,供src属性引用  
+    var fileurl = window.URL.createObjectURL(fileList[0]);     
+    console.log(fileList[0].type)        
+    if(fileList[0].type.indexOf('image') === 0){  //如果是图片  
+        var str="<img width='100%' height='100%' src='"+fileurl+"'>";  
+        document.getElementById('drop_area').innerHTML=str;                   
+    }else if(fileList[0].type=='audio/mp3'){  //如果是mp3  
+    	console.log('mp3')
+        var str='<audio src="'+fileurl+'" controls="controls">123</audio>';  
+        document.getElementById('drop_area').innerHTML=str;
+
+    }else if(video_type.in_array(fileList[0].type)){   //如果是规定格式内的视频                    
+        var str="<video width='100%' height='100%' controls='controls' src='"+fileurl+"'></video>";  
+        document.getElementById('drop_area').innerHTML=str;        
+    }else{ //其他格式，输出文件名  
+        //alert("不预览");  
+        var str="文件名字:"+fileList[0].name;  
+        document.getElementById('drop_area').innerHTML=str;      
+    }         
+    resultfile = fileList[0];             
+},false);  
+
+function xhr2(url){
+	var id=$('#up_id').val()
+	var __token__=$('#my_token').val()
+    var xhr = new XMLHttpRequest();//第一步  
+    //新建一个FormData对象  
+    var formData = new FormData(); //++++++++++  
+    //追加文件数据  
+    formData.append('file', resultfile); 
+    formData.append('id', id); 
+    formData.append('__token__', __token__); 
+    //post方式  
+    xhr.open('POST',"{:url('brand/up_img_action')}"); //第二步骤  
+    //发送请求  
+    xhr.send(formData);  //第三步骤  
+    //ajax返回  
+    xhr.onreadystatechange = function(){ //第四步  
+　　　　if ( xhr.readyState == 4 && xhr.status == 200 ) {  
+			alert('修改成功!')
+			list()
+			$('#modal').modal('hide')
+			new_token()
+　　　　}  
+　　};  
+    //设置超时时间  
+    xhr.timeout = 10000;  
+    xhr.ontimeout = function(event){  
+　　　　alert('请求超时！');  
+　　}
+}     
+</script>

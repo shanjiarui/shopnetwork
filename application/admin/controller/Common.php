@@ -18,8 +18,8 @@ class Common extends Controller
 		$module=Request::module();
 		$controller=Request::controller();
 		$action=Request::action();
-		$arr_controller=['Permission','Permissioncate','Role','User'];
-		$arr_action=['list','up_permission_action','add_action','del_permission','up_permission_category','del_permission_category','role_add_action','del_role','up_role','up_action','del_one','add_action'];
+		$arr_controller=['Permission','Permissioncate','Role','User','Brand','Product'];
+		$arr_action=['list','up_permission_action','add_action','del_permission','up_permission_category','del_permission_category','role_add_action','del_role','up_role','up_action','del_one','add_action','tree','my_update','del_one','add_action','select_all','up_img'];
 		$path="$module/$controller/$action";
 		$path=strtolower($path);
 		
@@ -35,13 +35,6 @@ class Common extends Controller
 				}
 			}
 		}
-	}
-	public function newToken()
-	{
-    	$new_token=uniqid();
-		Session::set('token',$new_token);
-		$js=['token'=>$new_token];
-		echo json_encode($js);
 	}
 	public function token()
 	{	

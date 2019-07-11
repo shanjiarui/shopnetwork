@@ -89,7 +89,7 @@
 			<div class="text-c">
 				<input type="text" class="input-text" style="width:200px" placeholder="权限分组名称" id="name">
 				<input type="text" class="input-text" style="width:200px" placeholder="权限分组描述" id="description">
-				<input type="text" name="__token__" id="token" value="{$token}" hidden="" />
+				<input type="text" name="__token__" id="token" value="{$Request.token}" hidden="" />
 				<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加权限分组</button>
 
 			</div>
@@ -178,14 +178,14 @@
 	function up_ok() {
 		var id=$('#up_permissioncategory_id').val()
 		var name=$('#up_permission_category').val()
-		var token=$('#token').val()
+		var __token__=$('#token').val()
 		var my_description=$('#my_description').val()
 		$.ajax({
 			url:"{:url('permissioncate/up_permissioncate_action')}",
 			data:{
 				id:id,
 				name:name,
-				token:token,
+				__token__:__token__,
 				my_description:my_description,
 			},
 			type:'post',
@@ -209,12 +209,12 @@
 		})
 	}
 	function del_permission_category(id) {
-		var token=$('#token').val()
+		var __token__=$('#token').val()
 		$.ajax({
 			url:"{:url('permissioncate/del_permission_category')}",
 			data:{
 				id:id,
-				token:token
+				__token__:__token__
 			},
 			type:'post',
 			dataType:'json',
@@ -233,7 +233,7 @@
 	function add_action() {
 		var name=$('#name').val()
 		var description=$('#description').val()
-		var token=$('#token').val()
+		var __token__=$('#token').val()
 		// console.log(name)
 		// console.log(path)
 		// console.log(cate)
@@ -241,7 +241,7 @@
 			url:"{:url('Permissioncate/add_action')}",
 			data:{
 				name:name,
-				token:token,
+				__token__:__token__,
 				description:description
 			},
 			type:'post',
@@ -269,7 +269,7 @@
 		//取出所有的checkbox的input
 		var x=document.getElementsByName("my_input");
 		var a=""
-		 var token=$('#token').val()
+		 var __token__=$('#token').val()
 		for (var i = 0; i < x.length; i++) {
 				 if (x[i].checked) {
 				 	a=a+","+x[i].value
@@ -279,7 +279,7 @@
 			url:"{:url('permissioncate/all_del')}",
 			data:{
 				id:a,
-				token:token
+				__token__:__token__
 			},
 			type:'post',
 			dataType:'json',
@@ -297,7 +297,7 @@
 	}
 	function mytoken() {
 		$.ajax({
-			url:"{:url('common/newToken')}",
+			url:"{:url('common/token')}",
 			dataType:'json',
 			success:function (res) {
 				$('#token').val(res.token)
