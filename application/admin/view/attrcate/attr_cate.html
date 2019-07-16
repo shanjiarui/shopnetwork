@@ -1,5 +1,4 @@
 {include file='header'}
-
 <style type="text/css">
 	.fade {opacity: 0;
 	-webkit-transition: opacity .15s linear;
@@ -59,37 +58,13 @@
 		.modal-lg {width: 900px}
 	}
  
-.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
+/*.modal-alert{position:fixed; right:auto; bottom:auto; width:300px; left:50%;margin-left:-150px; top:50%;margin-top:-30px; z-index:9999;background-color: #fff;border: 1px solid #999;border: 1px solid rgba(0,0,0,.2);outline: 0;
 	-webkit-background-clip: padding-box;
 	background-clip: padding-box; 
 	-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
 	box-shadow: 0 3px 9px rgba(0,0,0,.5)}
-.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}
-#up_permission{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 10px 10px;
-    width: 300px;
-    font-size: 14px;
-}
-/*#permission_category{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 10px 10px;
-    width: 300px;
-    font-size: 14px;
-}*/
-#up_path{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 10px 10px;
-    width: 300px;
-    font-size: 14px;
-}
-#my_description{
+.modal-alert-info{padding:30px; text-align:center; font-size:14px; background-color:#fff}*/
+#up_attrcate{
     outline-style: none ;
     border: 1px solid #ccc; 
     border-radius: 3px;
@@ -103,15 +78,12 @@
 	<div class="Hui-article">
 		<article class="cl pd-20">
 			<div class="text-c">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限名称" id="name">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限路径" id="path">
-					<input type="text" class="input-text" style="width:200px" placeholder="权限描述" id="description">
+					<input type="text" class="input-text" style="width:200px" placeholder="属性名" id="my_name">
+				<!-- 	<input type="text" class="input-text" style="width:200px" placeholder="商品价格" id="price">
+					<input type="text" class="input-text" style="width:200px" placeholder="商品库存" id="number"> -->
 					<input type="text" name="__token__" id="token" value="{$Request.token}" hidden="" />
-					<select id="cate">
-						<option value="">选择分组</option>
-						
-					</select>
-					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加权限节点</button>
+				
+					<button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe665;</i> 添加属性</button>
 
 			</div>
 			<div class="text-c">
@@ -121,16 +93,13 @@
 			<table class="table table-border table-bordered table-bg">
 				<thead>
 					<tr>
-						<th scope="col" colspan="7">权限节点</th>
+						<th scope="col" colspan="10" style="text-align: center;font-size: 30px">属性分类</th>
 					</tr>
 					<tr class="text-c">
 						<th width="25"><input type="checkbox" name="" value=""></th>
 						<th width="40">ID</th>
-						<th width="200">权限名称</th>
-						<th width="200">权限分类</th>
-						<th width="200">权限描述</th>
-						<th width="200">权限路径</th>
-						<th width="100">操作</th>
+						<th width="180">属性名称</th>
+						<th width="40">操作</th>
 					</tr>
 				</thead>
 				<tbody id="ii">
@@ -146,20 +115,8 @@
 						</div>
 						<div class="modal-body">
 							<!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
-						<input type="text" value="" id="up_permission_id" hidden="">
-							权限名:<input type="text" value="" id="up_permission">
-							<br>
-							<br>
-							
-							权限路径:<input type="text" value="" id="up_path">
-							<br>
-							<br>
-							权限描述:<input type="text" value="" id="my_description">
-							<br>
-							<br>
-							权限分类:<select id="up_permission_category">
-															
-									</select>
+						<input type="text" id="up_attrcate_id" hidden="">
+							商品名:<input type="text" value="" id="up_attrcate">
 						</div>
 						<div class="modal-footer">
 							<button class="btn btn-primary" onclick="up_ok()">确定</button>
@@ -172,3 +129,116 @@
 	</div>
 </section>
 {include file='footer'}
+<script type="text/javascript">
+	function list() {
+		$.ajax({
+			url:"{:url('attrcate/list')}",
+			dataType:"json",
+			success:function (res) {
+				arr=res.data
+				tr=''
+				for (var i = 0; i < arr.length; i++) {
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td>"+arr[i].name+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_attrcate("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_attrcate("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+				}
+				$("#ii").html(tr)
+			}
+		})
+	}
+	list()
+	function add_action() {
+		var __token__=$("#token").val()
+		var name=$("#name").val()
+		$.ajax({
+			url:"{:url('attrcate/add_action')}",
+			data:{
+				name:name,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				token()
+				if (res.status=="ok") {
+					list()
+					alert(res.data)
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+	function token() {
+		$.ajax({
+			url:"{:url('common/token')}",
+			dataType:'json',
+			success:function (res) {
+				$("#token").val(res.token)
+			}
+		})
+	}
+	function del_attrcate(id) {
+		var __token__=$("#token").val()
+		$.ajax({
+			url:"{:url('attrcate/del_one')}",
+			data:{
+				__token__:__token__,
+				id:id
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				token()
+				if (res.status=="ok") {
+					list()
+					alert(res.data)
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+	function up_attrcate(id) {
+		var __token__=$("#token").val()
+		$.ajax({
+			url:"{:url('attrcate/up_attrcate')}",
+			data:{
+				id:id,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				arr=res.data
+				token()
+				$('#up_attrcate_id').val(arr[0].id)
+				$('#up_attrcate').val(arr[0].name)
+				$('#modal-demo').modal('show')
+			}
+		})
+	}
+	function up_ok() {
+		var name=$("#up_attrcate").val()
+		var id=$("#up_attrcate_id").val()
+		var __token__=$("#token").val()
+		$.ajax({
+			url:"{:url('attrcate/up_action')}",
+			data:{
+				id:id,
+				name:name,
+				__token__:__token__
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				token()
+				if (res.status=='ok') {
+					list()
+					alert(res.data)
+					$('#modal-demo').modal('hide')
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+</script>
