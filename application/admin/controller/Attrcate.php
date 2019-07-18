@@ -96,4 +96,6 @@ class Attrcate extends Common
         	}
         }
 	}
+	
+
 }

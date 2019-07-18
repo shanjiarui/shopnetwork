@@ -1,0 +1,89 @@
+{include file='header'}
+<style type="text/css">
+
+</style>
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="text-c">
+                <input type="text" class="input-text" style="width:200px" placeholder="商品名称" id="name">
+                <!-- 	<input type="text" class="input-text" style="width:200px" placeholder="商品价格" id="price">
+                    <input type="text" class="input-text" style="width:200px" placeholder="商品库存" id="number"> -->
+                <input type="text" name="__token__" id="token" value="{$Request.token}" hidden="" />
+                <select id="cate">
+                    <option value="">选择品牌分类</option>
+
+                </select>
+                <select id="brand">
+                    <option value="">选择属性</option>
+
+                </select>
+                <button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe600;</i> 添加货品</button>
+
+            </div>
+            <div class="text-c">
+                <span id="op">&nbsp</span>
+            </div>
+            <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="10" style="text-align: center;font-size: 30px">商品规格</th>
+                </tr>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="40">ID</th>
+                    <th width="180">货品规格</th>
+                    <th width="100">货品单价</th>
+                    <th width="100">货品库存</th>
+                    <th width="40">操作</th>
+                </tr>
+                </thead>
+                <tbody id="ii">
+
+                </tbody>
+            </table>
+            <div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content radius">
+                        <div class="modal-header">
+                            <h3 class="modal-title">请在下面进行修改</h3>
+                            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                        </div>
+                        <div class="modal-body">
+                            <!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
+                            <input type="text" value="" id="up_goods_id" hidden="">
+                            商品名:<input type="text" value="" id="up_goods">
+                            <br>
+                            <br>
+                            <!-- 商品价格:<input type="text" value="" id="up_price">
+                            <br>
+                            <br>
+                            商品库存:<input type="text" value="" id="my_number">
+                            <br>
+                            <br> -->
+                            商品分类:<select id="up_cate">
+
+                        </select>
+                            <br>
+                            <br>
+                            商品品牌:<select id="up_brand">
+
+                        </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="up_ok()">确定</button>
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+    </div>
+</section>
+{include file='footer'}
+<script type="text/javascript">
+
+</script>
