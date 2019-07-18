@@ -218,16 +218,35 @@ class Goods extends Common
 		$id=Request::post('id');
 		$goods=Db::query("select * from goods where goods_id=$id");
 		$attr_category=Db::query("select * from attr_category");
-		// $shop_brand=Db::query("select * from shop_brand");
-		// $shop_category=Db::query("select * from shop_category");
-		// echo "123";die;
-		// $there=Db::query("select goods.goods_id,goods.goods_name,goods.is_show,specific_attr.id as specific_attr_id,specific_attr.`name`,attr.id as attr_id,attr.`name` as attr_name from goods join goods_attr on goods.goods_id=goods_attr.goods_id join specific_attr on goods_attr.specific_attr_id=specific_attr.id join attr on goods_attr.attr_id=attr.id where goods.goods_id=$id");
-		$js=['goods'=>$goods,'attr_category'=>$attr_category];
-		echo json_encode($js);
-		
+		$specific_attr=Db::query("select * from goods_attr where goods_id=$id");
+
+		if (empty($specific_attr)){
+            $js=['goods'=>$goods,'attr_category'=>$attr_category,'status'=>'300'];
+            echo json_encode($js);
+        }else{
+            $attr_id=$specific_attr[0]['attr_id'];
+            $attr_category_id=Db::query("select * from attr where id=$attr_id");
+            $cate_id=$attr_category_id[0]['attr_category_id'];
+            $arr=Db::query("select attr.name as a_name,specific_attr.id as spe_id,specific_attr.`name` from specific_attr join attr on attr.id=specific_attr.attr_id where attr.attr_category_id=$cate_id");
+            $new_arr=[];
+            foreach ($arr as $key => $value) {
+                $new_arr[$value['a_name']][$value['spe_id']]=$value['name'];
+            }
+            $moren_attr=Db::query("select specific_attr.id from specific_attr join goods_attr on specific_attr.id=goods_attr.specific_attr_id where goods_attr.goods_id=$id");
+            $attr_id=$specific_attr[0]['attr_id'];
+//		    $attr_cate=Db::query("select * from attr_category where id=$attr_id");
+            // $shop_brand=Db::query("select * from shop_brand");
+            // $shop_category=Db::query("select * from shop_category");
+            // echo "123";die;
+            // $there=Db::query("select goods.goods_id,goods.goods_name,goods.is_show,specific_attr.id as specific_attr_id,specific_attr.`name`,attr.id as attr_id,attr.`name` as attr_name from goods join goods_attr on goods.goods_id=goods_attr.goods_id join specific_attr on goods_attr.specific_attr_id=specific_attr.id join attr on goods_attr.attr_id=attr.id where goods.goods_id=$id");
+            $js=['goods'=>$goods,'attr_category'=>$attr_category,'attr_id'=>$attr_id,'arr'=>$new_arr,'specific_attr'=>$specific_attr,'moren_id'=>$moren_attr,'status'=>'200'];
+            echo json_encode($js);
+        }
+
 	}
 	public function attr_cate()
 	{
+	    $goods_id=Request::post('goods_id');
 		$id=Request::post('id');
 		// echo $id;die;
 		$arr=Db::query("select attr.name as a_name,specific_attr.id as spe_id,specific_attr.`name` from specific_attr join attr on attr.id=specific_attr.attr_id where attr.attr_category_id=$id");
@@ -235,7 +254,12 @@ class Goods extends Common
 		foreach ($arr as $key => $value) {
 			$new_arr[$value['a_name']][$value['spe_id']]=$value['name'];
 		}
-		$js=['code'=>'0','status'=>'ok','data'=>$new_arr];
+        $specific_attr=Db::query("select specific_attr.id from specific_attr join goods_attr on specific_attr.id=goods_attr.specific_attr_id where goods_attr.goods_id=$goods_id");
+//		echo "<pre>";
+//		var_dump($specific_attr);
+//		echo "<pre>";
+//		var_dump($new_arr);
+		$js=['code'=>'0','status'=>'ok','data'=>$new_arr,'spe_id'=>$specific_attr];
 		echo json_encode($js);
 		// if ($id=='') {
 		// 	$js=['code'=>'0','status'=>'error','data'=>'属性分类未选择'];
