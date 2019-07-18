@@ -207,4 +207,89 @@ class Goods extends Common
 		$js=['code'=>'0','status'=>'ok','data'=>'删除成功!'];
 		echo json_encode($js);
 	}
+	public function minute()
+	{
+		$id=Request::get('id');
+		$this->assign('id',$id);
+		return $this->fetch("goods/minute");
+	}
+	public function show_all()
+	{
+		$id=Request::post('id');
+		$goods=Db::query("select * from goods where goods_id=$id");
+		$attr_category=Db::query("select * from attr_category");
+		// $shop_brand=Db::query("select * from shop_brand");
+		// $shop_category=Db::query("select * from shop_category");
+		// echo "123";die;
+		// $there=Db::query("select goods.goods_id,goods.goods_name,goods.is_show,specific_attr.id as specific_attr_id,specific_attr.`name`,attr.id as attr_id,attr.`name` as attr_name from goods join goods_attr on goods.goods_id=goods_attr.goods_id join specific_attr on goods_attr.specific_attr_id=specific_attr.id join attr on goods_attr.attr_id=attr.id where goods.goods_id=$id");
+		$js=['goods'=>$goods,'attr_category'=>$attr_category];
+		echo json_encode($js);
+		
+	}
+	public function attr_cate()
+	{
+		$id=Request::post('id');
+		// echo $id;die;
+		$arr=Db::query("select attr.name as a_name,specific_attr.id as spe_id,specific_attr.`name` from specific_attr join attr on attr.id=specific_attr.attr_id where attr.attr_category_id=$id");
+		$new_arr=[];
+		foreach ($arr as $key => $value) {
+			$new_arr[$value['a_name']][$value['spe_id']]=$value['name'];
+		}
+		$js=['code'=>'0','status'=>'ok','data'=>$new_arr];
+		echo json_encode($js);
+		// if ($id=='') {
+		// 	$js=['code'=>'0','status'=>'error','data'=>'属性分类未选择'];
+		// 	echo json_encode($js);
+		// }else{
+		// 	$arr=Db::query("select * from attr where attr_category_id=$id");
+		// 	$new=[];
+		// 	$new_arr=[];
+		// 	foreach ($arr as $key => $value) {
+		// 		$new[]=$value['id'];
+		// 	}
+		// 	foreach ($new as $key => $value) {
+		// 		$new_arr[]=Db::query("select * from specific_attr where attr_id=$value");
+		// 	}
+		// 	echo "<pre>";
+		// 	var_dump($new_arr);
+		// 	// $js=['code'=>'0','status'=>'ok','data'=>$arr];
+		// 	// echo json_encode($js);
+		// }
+		
+	}
+	public function specific_attr()
+	{
+		$id=Request::post('id');
+		// echo $id;die;
+		if ($id=='') {
+			$js=['code'=>'0','status'=>'error','data'=>'属性分类未选择'];
+			echo json_encode($js);
+		}else{
+			$arr=Db::query("select * from specific_attr where attr_id=$id");
+			$js=['code'=>'0','status'=>'ok','data'=>$arr];
+			echo json_encode($js);
+		}
+		
+	}
+	public function up_attr()
+	{
+		$str=Request::post('str');
+		$goods_id=Request::post('goods_id');
+		$arr=Db::query("delete from goods_attr where goods_id=$goods_id");
+		if ($str=='') {
+			$js=['code'=>'0','status'=>'error','data'=>'属性分类未选择'];
+			echo json_encode($js);
+			die;
+		}else{
+			$ayy=explode(",",$str);
+			for ($i=0; $i < count($ayy); $i++) { 
+				$id=$ayy[$i];
+				$okk=Db::query("select * from specific_attr where id=$id");
+				$attr_id=$okk[0]['attr_id'];
+				Db::query("insert into goods_attr(goods_id,specific_attr_id,attr_id) values ($goods_id,$id,$attr_id)");
+			}
+			$js=['code'=>'0','status'=>'ok','data'=>'属性添加成功!'];
+			echo json_encode($js);
+		}
+	}	
 }

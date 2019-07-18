@@ -178,6 +178,7 @@
 					</div>
 				</div>
 			</div>
+
 		</article>
 	</div>
 </section>
@@ -202,14 +203,19 @@
 					all_brand=all_brand+"<option value='"+brand[i].brand_id+"'>"+brand[i].brand_name+"</option>"
 				}
 				$('#brand').html("<option value=''>请选择品牌</option>"+all_brand)
-				for (var i = 0; i < arr.length; i++) {
+				if (arr.length==0) {
+					$('#ii').html('')
+				}else{
+					for (var i = 0; i < arr.length; i++) {
 					if (arr[i].is_show=="1") {
-						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].goods_id+"' name='my_input' id='po'></td><td>"+arr[i].goods_id+"</td><td>"+arr[i].goods_name+"</td><td>"+arr[i].cate_name+"</td><td>"+arr[i].brand_name+"</td><td><a href='{:url('goods/goods_img')}?id="+arr[i].goods_id+"'>点击查看</a></td><td value='1' onclick='show("+arr[i].goods_id+",1)'><i class='Hui-iconfont'>&#xe6a8;</i></td><td>"+arr[i].add_time+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].goods_id+"' name='my_input' id='po'></td><td>"+arr[i].goods_id+"</td><td>"+arr[i].goods_name+"</td><td>"+arr[i].cate_name+"</td><td>"+arr[i].brand_name+"</td><td><a href='{:url('goods/goods_img')}?id="+arr[i].goods_id+"'>点击查看</a></td><td value='1' onclick='show("+arr[i].goods_id+",1)'><i class='Hui-iconfont'>&#xe6a8;</i></td><td>"+arr[i].add_time+"</td><td><a title='详情' href='{:url('goods/minute')}?id="+arr[i].goods_id+"'  class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe60c;</i><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 					}else{
-						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].goods_id+"' name='my_input' id='po'></td><td>"+arr[i].goods_id+"</td><td>"+arr[i].goods_name+"</td><td>"+arr[i].cate_name+"</td><td>"+arr[i].brand_name+"</td><td><a href='{:url('goods/goods_img')}?id="+arr[i].goods_id+"'>点击查看</a></td><td value='0' onclick='show("+arr[i].goods_id+",0)'><i class='Hui-iconfont'>&#xe631;</i></td><td>"+arr[i].add_time+"</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+						tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].goods_id+"' name='my_input' id='po'></td><td>"+arr[i].goods_id+"</td><td>"+arr[i].goods_name+"</td><td>"+arr[i].cate_name+"</td><td>"+arr[i].brand_name+"</td><td><a href='{:url('goods/goods_img')}?id="+arr[i].goods_id+"'>点击查看</a></td><td value='0' onclick='show("+arr[i].goods_id+",0)'><i class='Hui-iconfont'>&#xe631;</i></td><td>"+arr[i].add_time+"</td><td><a title='详情' href='{:url('goods/minute')}?id="+arr[i].goods_id+"'  class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe60c;</i><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods("+arr[i].goods_id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 					}
 					$('#ii').html(tr)
 				}
+				}
+				
 			}
 		})
 	}
@@ -254,7 +260,6 @@
 	}
 	function del_goods(id) {
 		var __token__=$('#token').val()
-		console.log(id)
 		$.ajax({
 			url:"{:url('goods/del_action')}",
 			data:{
@@ -264,9 +269,10 @@
 			type:'post',
 			dataType:'json',
 			success:function (res) {
-				new_token()
-				alert(res.data)
-				list()
+				new_token();
+				list();
+				alert(res.data);
+				
 			}
 		})
 	}

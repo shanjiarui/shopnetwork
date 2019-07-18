@@ -9,37 +9,36 @@ use think\Db;
 use Request;
 use think\Validate;
 use Session;
-class Attr extends Common
+class Attrspe extends Common
 {
-	public function attr()
+	public function Attrspe()
 	{
-		$attr_cate_id=Request::get('attr_cate');
-		// echo $attr_cate_id;die;
-		$this->assign('attr_cate_id',$attr_cate_id);
-		return $this->fetch('attr/attr');
+		$attr_id=Request::get('attr_id');
+		$this->assign('attr_id',$attr_id);
+		return $this->fetch("attrspe/attrspe");
 	}
 	public function list()
 	{
 		$data=Request::post();
-		$attr_cate_id=$data['attr_cate_id'];
-		$arr=Db::query("select * from attr where attr_category_id=$attr_cate_id");
+		$attr_id=$data['attr_id'];
+		$arr=Db::query("select * from specific_attr where attr_id=$attr_id");
 		$js=['code'=>'0','status'=>'ok','data'=>$arr];
 		echo json_encode($js);
 	}
 	public function add_action()
 	{
 		$data=Request::post();
-		$validate = new \app\admin\validate\Attradd;
+		$validate = new \app\admin\validate\Attrspe;
         if (!$validate->check($data)) {
         	$js=['code'=>'0','status'=>'error','data'=>$validate->getError()];
         	echo json_encode($js);
         	die;
         }
-		$attr_cate_id=$data['attr_cate_id'];
+		$attr_id=$data['attr_id'];
 		$name=$data['name'];
-		$arr=Db::query("select * from attr where name='$name'");
+		$arr=Db::query("select * from specific_attr where name='$name'");
 		if (empty($arr)) {
-			Db::query("insert into attr(`name`,attr_category_id) values ('$name',$attr_cate_id)");
+			Db::query("insert into specific_attr(`name`,attr_id) values ('$name',$attr_id)");
 			$js=['code'=>'0','status'=>'ok','data'=>'添加成功!'];
 			echo json_encode($js);
 		}else{
@@ -57,8 +56,7 @@ class Attr extends Common
         	die;
         }
         $id=$data['id'];
-        Db::query("delete from attr where id=$id");
-        Db::query("delete from specific_attr where attr_id=$id");
+        Db::query("delete from specific_attr where id=$id");
 		$js=['code'=>'0','status'=>'ok','data'=>'删除成功!'];
 		echo json_encode($js);
 	}

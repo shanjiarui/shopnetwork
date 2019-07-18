@@ -158,6 +158,7 @@
 		url:"{:url('role/all_permission')}",
 		dataType:'json',
 		success:function (res) {
+			console.log(res)
 			if (res.code=='10001') {
 					alert("没有权限!")
 			}else{

@@ -44,7 +44,9 @@
 			url:"{:url('role/all_permission')}",
 			dataType:'json',
 			success:function (res) {
+
 				arr = res.data
+				console.log(arr)
 				head=''
 				$.each( arr, function( key, val ) {
 					head=head+"<dt><label><input type='checkbox' value='' name='user-Character-0' id='user-Character-0'>"+key+"</label><br></dt><dd>"

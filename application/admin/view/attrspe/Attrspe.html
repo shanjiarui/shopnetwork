@@ -109,6 +109,8 @@
 			<div class="text-c">
 			<span id="op">&nbsp</span>
 			</div>
+			<input type="hidden" name="__token__" value="{$Request.token}" id="token"/>
+			<input type="text" name="" value="{$attr_id}" id="attr_id" hidden="">
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r" id="ooop"></span> </div>
 			<table class="table table-border table-bordered table-bg">
 				<thead>
@@ -118,7 +120,7 @@
 					<tr class="text-c">
 						<th width="25"><input type="checkbox" name="" value=""></th>
 						<th width="40">ID</th>
-						<th width="200">属性名称</th>
+						<th width="200">属性具体名称</th>
 						<th width="200">操作</th>
 					</tr>
 				</thead>
@@ -126,46 +128,6 @@
 					
 				</tbody>
 			</table>
-			<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content radius">
-						<div class="modal-header">
-							<h3 class="modal-title">请在下面进行修改</h3>
-							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
-						</div>
-						<div class="modal-body">
-						<input type="hidden" name="__token__" value="{$Request.token}" id="token"/>
-						<input type="text" value="" id="up_brand_id" hidden="">
-							品牌名:<input type="text" value="" id="up_brand">
-							<br>
-							<br>
-							
-							品牌官网:<input type="text" value="" id="up_url">
-							<br>
-							<br>
-							是否展示:<span id="okk"></span>
-						</div>
-						<input type="text" name="" value="{$attr_cate_id}" id="attr_cate_id" hidden="">
-						<div class="modal-footer">
-							<button class="btn btn-primary" onclick="up_ok()">确定</button>
-							<button class="btn" data-dismiss="modal" aria-hidden="true" >关闭</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content radius">
-						<div class="modal-header">
-							<h3 class="modal-title"></h3>
-							<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
-							<input type="text" id='up_id' value="" hidden="">
-							商品名:<input type="text" value="" id="up_goods">
-							<br>
-							<br>
-					</div>
-				</div>
-			</div>
 		</article>
 	</div>
 </section>
@@ -173,12 +135,12 @@
 <script type="text/javascript">
     function list() {
     	// var __token__=$("#token").val()
-    	var attr_cate_id=$("#attr_cate_id").val()
+    	var attr_id=$("#attr_id").val()
     	$.ajax({
-    		url:"{:url('attr/list')}",
+    		url:"{:url('attrspe/list')}",
     		type:'post',
     		data:{
-    			attr_cate_id:attr_cate_id,
+    			attr_id:attr_id,
     			// __token__:__token__
     		},
     		dataType:'json',
@@ -187,7 +149,7 @@
     			arr=res.data
     			tr=''
 				for (var i = 0; i < arr.length; i++) {
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td>"+arr[i].name+"</td><td><a title='详情' href='{:url('attrspe/attrspe')}?attr_id="+arr[i].id+"'  class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe60c;</i></a><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_attr("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td><strong>"+arr[i].name+"</strong></td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_permission("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_attrspe("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 				}
 				$("#ii").html(tr)
     		}
@@ -197,12 +159,12 @@
     function add_action() {
     	var __token__=$("#token").val()
     	var name=$("#name").val()
-    	var attr_cate_id=$("#attr_cate_id").val()
+    	var attr_id=$("#attr_id").val()
     	$.ajax({
-    		url:"{:url('attr/add_action')}",
+    		url:"{:url('attrspe/add_action')}",
     		data:{
     			name:name,
-    			attr_cate_id:attr_cate_id,
+    			attr_id:attr_id,
     			__token__:__token__
     		},
     		type:'post',
@@ -227,10 +189,10 @@
     		}
     	})
     }
-    function del_attr(id) {
+    function del_attrspe(id) {
     	var __token__=$("#token").val()
     	$.ajax({
-    		url:"{:url('attr/del_one')}",
+    		url:"{:url('attrspe/del_one')}",
     		data:{
     			id:id,
     			__token__:__token__

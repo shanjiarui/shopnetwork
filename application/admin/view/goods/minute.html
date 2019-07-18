@@ -1,0 +1,137 @@
+{include file="header"}
+<link href="__STATIC__/hui/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-article-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>产品名称:</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="name" name="">
+			</div>
+		</div>
+		<input type="text" id="goods_id" value="{$id}" hidden="">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>产品属性分类:</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="" class="select" id="attrcate" onchange="attr_catea()">
+				</select>
+				</span></div>
+		</div>
+		<div class="row cl">
+			<input type="hidden" id="__token__" value="{$Request.token}" />
+			<label class="form-label col-xs-4 col-sm-2">所有属性：</label>
+			<div class="formControls col-xs-8 col-sm-9" id="my_permission">
+				<span id="permission_status" style="color: red"></span>
+				<dl class="permission-list" id="all_attr">
+					
+				</dl>
+			</div>
+		</div>
+		
+		<!-- <div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>属性:</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="" class="select" id="all_attr" onchange="attr()">
+					<option>具体属性</option>
+				</select>
+				</span></div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>属性明细:</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="" class="select" id="all_attrspe">
+					<option>属性明细</option>
+				</select>
+				</span></div>
+		</div> -->
+		<br>
+		<div style="text-align: center">
+		<input type="button" class="btn btn-primary radius" onclick="up_ok()" value="提交">
+		<input type="button" class="btn btn-warning radius" value="返回">
+		</div>
+	</form>
+</div>
+{include file="footer"}
+<script type="text/javascript">
+	function show() {
+		var id=$('#goods_id').val()
+		$.ajax({
+			url:"{:url('goods/show_all')}",
+			data:{
+				id:id
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				attrcate=res.attr_category
+				goods=res.goods
+				// brand=res.shop_brand
+				// shop_cate=res.shop_category
+				there=res.there
+				attr_cate=''
+				for (var i = 0; i < attrcate.length; i++) {
+						attr_cate=attr_cate+"<option value='"+attrcate[i].id+"'>"+attrcate[i].name+"</option>"
+				}
+				// all_attrcate=attr_cate_se+attr_cate
+				$("#attrcate").html("<option value=''>选择属性分类就可以获得此属性分类的所有属性</option>"+attr_cate)
+				$("#name").val(goods[0].goods_name)
+				$("#goods_id").val(goods[0].goods_id)
+			}
+		})
+	}
+	show()
+	function attr_catea() {
+		var attr_id=$("#attrcate").val()
+		$.ajax({
+			url:"{:url('goods/attr_cate')}",
+			data:{
+				id:attr_id
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=='ok') {
+					arr=res.data
+					tr=''
+					$.each(arr,function( key ,value ){
+					tr=tr+"	<dt><label >"+key+"</label></dt><dd>"
+						$.each(value,function( key1 ,value1 ){
+							tr=tr+"	<label class=''><input type='checkbox' class='mycheckbox' value='"+key1+"' name='user-Character-0-0-0' id='user-Character-0-0-4'>"+value1+"</label>"
+						})
+					})
+					$("#all_attr").html(tr)
+				}else{
+					$("#all_attr").html("&nbsp")
+				}
+				
+			}
+		})
+	}
+	function up_ok() {
+		var check=$("input[name='user-Character-0-0-0']:checked")
+		var arr=[]
+		for (var i = 0; i < check.length; i++) {
+			arr.push(check[i].value)
+		}
+		str = arr.join(',')
+		var goods_id=$("#goods_id").val()
+		$.ajax({
+			url:"{:url('goods/up_attr')}",
+			data:{
+				goods_id:goods_id,
+				str:str,
+			},
+			type:'post',
+			dataType:'json',
+			success:function (res) {
+				if (res.status=="ok") {
+					alert(res.data)
+					location.href="{:url('goods/goods')}"
+				}else{
+					alert(res.data)
+				}
+			}
+		})
+	}
+</script>
