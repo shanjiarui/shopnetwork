@@ -6,25 +6,25 @@
     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
     <div class="Hui-article">
         <article class="cl pd-20">
-            <div class="text-c">
-                <input type="text" class="input-text" style="width:200px" placeholder="商品名称" id="name">
+            <div class="text-c" id="sel">
+                <input type="text" class="input-text" style="width:200px" placeholder="货品价格" id="price">
+                <input type="text" class="input-text" style="width:200px" placeholder="货品库存" id="stock">
                 <!-- 	<input type="text" class="input-text" style="width:200px" placeholder="商品价格" id="price">
                     <input type="text" class="input-text" style="width:200px" placeholder="商品库存" id="number"> -->
                 <input type="text" name="__token__" id="token" value="{$Request.token}" hidden="" />
-                <select id="cate">
-                    <option value="">选择品牌分类</option>
+<!--                <div id="sel" class="text-c">-->
 
-                </select>
-                <select id="brand">
-                    <option value="">选择属性</option>
-
-                </select>
+<!--                </div>-->
                 <button type="submit" class="btn btn-success" onclick="add_action()"><i class="Hui-iconfont">&#xe600;</i> 添加货品</button>
+            <div id="oo">
 
             </div>
+            </div>
+
             <div class="text-c">
                 <span id="op">&nbsp</span>
             </div>
+            <input value="{$id}" id="goods_id" hidden>
             <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
             <table class="table table-border table-bordered table-bg">
                 <thead>
@@ -44,46 +44,106 @@
 
                 </tbody>
             </table>
-            <div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content radius">
-                        <div class="modal-header">
-                            <h3 class="modal-title">请在下面进行修改</h3>
-                            <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
-                        </div>
-                        <div class="modal-body">
-                            <!-- <input type="text" value="" id="up_permission_id" hidden=""> -->
-                            <input type="text" value="" id="up_goods_id" hidden="">
-                            商品名:<input type="text" value="" id="up_goods">
-                            <br>
-                            <br>
-                            <!-- 商品价格:<input type="text" value="" id="up_price">
-                            <br>
-                            <br>
-                            商品库存:<input type="text" value="" id="my_number">
-                            <br>
-                            <br> -->
-                            商品分类:<select id="up_cate">
-
-                        </select>
-                            <br>
-                            <br>
-                            商品品牌:<select id="up_brand">
-
-                        </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="up_ok()">确定</button>
-                            <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </article>
     </div>
 </section>
 {include file='footer'}
 <script type="text/javascript">
+    function list() {
+        var goods_id=$('#goods_id').val()
+        $.ajax({
+            url:"{:url('goodsspecs/list')}",
+            data:{
+                goods_id:goods_id,
+            },
+            type:'post',
+            success:function (res) {
+                arr=res.data
+                tr=''
+                for(i=0;i<arr.length;i++){
+                    tr=tr+"<tr class='text-c'><td><input type='checkbox' value='"+arr[i].id+"' name='my_input' id='po'></td><td>"+arr[i].id+"</td><td>"+arr[i].goods_attr_id+"</td><td>"+arr[i].price+"</td><td>"+arr[i].stock+"</td><td><a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_one("+arr[i].id+")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+                }
+                $("#ii").html(tr)
+                sel=res.sel
+                option=""
+                $.each(sel,function(key,val) {
+                    option=option+""+key+":<select"
+                    $.each(val,function(key1,val1) {
+                        option=option+" id=sel"+key1+"><option value=''>请选择</option>"
+                        $.each(val1,function(key2,val2) {
+                            option=option+"<option value='"+key2+"'>"+val2+"</option>"
+                        })
+                    })
+                    option=option+"</select>&nbsp&nbsp&nbsp"
+                })
+                $("#oo").html(option)
+            }
+        })
+    }
+    list()
+    function add_action() {
+        var goods_id=$('#goods_id').val()
+        var attr_id="{$attr_id}"
+        var stock=$("#stock").val()
+        var price=$("#price").val()
+        var __token__=$('#token').val()
+        arr = attr_id.split(',')
+        new_arr=[]
+        for(i=0;i<arr.length;i++) {
+            new_arr.push($('#sel' + arr[i]).val())
+        }
+        $.ajax({
+            url:"{:url('goodsspecs/add_action')}",
+            data:{
+                goods_id:goods_id,
+                new_arr:new_arr,
+                stock:stock,
+                price:price,
+                __token__:__token__
+            },
+            type:'post',
+            success:function (res) {
+                new_token()
+                list()
+                if(res.status='error') {
+                    alert(res.data)
+                }else{
+                    alert(res.data)
+                }
+
+
+            }
+        })
+    }
+    function del_one(id) {
+        var __token__=$('#token').val()
+        $.ajax({
+            url:"{:url('goodsspecs/del_one')}",
+            data:{
+                id:id,
+                __token__:__token__
+            },
+            type:'post',
+            success:function(res) {
+                new_token()
+                if(res.status=='ok') {
+                    list()
+                    alert(res.data)
+                }else{
+                    alert(res.data)
+                }
+
+            }
+        })
+    }
+    function new_token() {
+        $.ajax({
+            url:"{:url('common/token')}",
+            dataType:'json',
+            success:function (res) {
+                $('#token').val(res.token)
+            }
+        })
+    }
 
 </script>
