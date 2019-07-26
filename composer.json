@@ -20,7 +20,9 @@
         "topthink/framework": "5.1.*",
         "topthink/think-captcha": "2.0.*",
         "gmars/tp5-rbac": "^2.0",
-        "topthink/think-image": "^1.0"
+        "topthink/think-image": "^1.0",
+        "phpoffice/phpspreadsheet": "^1.8",
+        "tp5er/easyexcel": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -10,6 +10,9 @@
 				<span class="f-14">v2.3</span>
 				后台模版！</p>
 			<p>登录次数：18 </p>
+			<input type="file" name="file" id="my_file" />
+			<br />
+			<input type="button"  value="提交" onclick="add()"/>
 			<p>上次登录IP：222.35.131.79.1  上次登录时间：2014-6-14 11:19:55</p>
 			<table class="table table-border table-bordered table-bg">
 				<thead>
@@ -74,3 +77,23 @@
 </div>
 </section>
 {include file="footer"}
+<script>
+	function add() {
+		var formData = new FormData();
+		formData.append('my_file', $('input[name=file]')[0].files[0]);
+		console.log($('input[name=file]')[0].files[0])
+		$.ajax({
+			url:"{:url('index/add')}",
+			data:formData,
+			type:'post',
+			contentType: false, // 注意这里应设为false
+			processData: false,
+			cache: false,
+			success:function(res) {
+				console.log(res)
+			}
+
+
+		})
+	}
+</script>

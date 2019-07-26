@@ -9,6 +9,7 @@ use think\Db;
 use Request;
 use think\Validate;
 use Session;
+use Cache;
 class Product extends Common
 {
 	public function product()
@@ -22,7 +23,12 @@ class Product extends Common
 	// }
 	public function tree()
 	{
-		$arr=Db::query("select * from shop_category");
+//		$arr=Db::query("select * from shop_category");
+        $arr=Cache::get('name');
+        if (!$arr){
+            $arr=Db::query('select * from shop_category');
+            Cache::set('name',$arr,3600);
+        }
 		$this->getTree($arr);
 	}
 	public function getTree($array, $pid =0, $level = 0){
@@ -55,6 +61,7 @@ class Product extends Common
 	}
 	public function add_action()
 	{
+	    Cache::rm('name');
 		$data=Request::post();
 		$p_id=$data['p_id'];
 		$name=$data['name'];
