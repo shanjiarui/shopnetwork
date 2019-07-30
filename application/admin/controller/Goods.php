@@ -3,6 +3,8 @@ namespace app\admin\controller;
 /**
  * 
  */
+
+use Redis;
 use think\Controller;
 use gmars\rbac\Rbac;
 use think\Db;
@@ -20,8 +22,11 @@ class Goods extends Common
 	{
 		$ayy=Db::query('select * from shop_brand');
 		$akk=Db::query('select * from shop_category');
-		$arr=Db::query('select g.goods_id,g.goods_name,sb.brand_name,sc.cate_name,g.is_show,g.goods_out,g.add_time from goods as g join shop_brand as sb on g.brand_id=sb.brand_id join shop_category as sc on g.cate_id=sc.cate_id');
-		$js=['code'=>'0','status'=>'ok','data'=>$arr,'cate'=>$akk,'brand'=>$ayy];
+		$arr=Db::query('select g.goods_id,g.goods_name,sb.brand_name,sc.cate_name,g.is_show,g.goods_out,g.add_time from goods as g join shop_brand as sb on g.brand_id=sb.brand_id join shop_category as sc on g.cate_id=sc.cate_id limit 0,50');
+        $redis = new Redis();
+        $redis->connect('127.0.0.1',6379);
+        $hot=$redis->Zrevrange('sort',0,4,true);
+		$js=['code'=>'0','status'=>'ok','data'=>$arr,'cate'=>$akk,'brand'=>$ayy,'hot'=>$hot];
 		echo json_encode($js);
 	}
 	public function add_action()
@@ -39,6 +44,9 @@ class Goods extends Common
        	$time=date('Y-m-d h:i:s', time());
 		$arr=Db::query("select * from goods where goods_name='$name'");
 		if (empty($arr)) {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1',6379);
+            $redis->del('select');
 			Db::query("insert into goods(goods_name,cate_id,brand_id,is_show,goods_out,add_time) values ('$name',$cate_id,$brand_id,0,0,'$time')");
 			$js=['code'=>'0','status'=>'ok','data'=>'添加成功!'];
 			echo json_encode($js);
@@ -56,6 +64,9 @@ class Goods extends Common
         	echo json_encode($js);
         	die;
         }
+        $redis = new Redis();
+        $redis->connect('127.0.0.1',6379);
+        $redis->del('select');
         $id=$data['id'];
         $arr=Db::query("select * from goods_photo where goods_id=$id");
         foreach ($arr as $key => $value) {
@@ -107,6 +118,9 @@ class Goods extends Common
         	echo json_encode($js);
         	die;
         }
+        $redis = new Redis();
+        $redis->connect('127.0.0.1',6379);
+        $redis->del('select');
         $name=$data['name'];
         $id=$data['id'];
         $cate_id=$data['cate'];
@@ -228,20 +242,12 @@ class Goods extends Common
             $attr_id=$specific_attr[0]['attr_id'];
             $attr_category_id=Db::query("select * from attr where id=$attr_id");
             $cate_id=$attr_category_id[0]['attr_category_id'];
-            // echo $cate_id;die;
-            // echo $cate_id;
             $arr=Db::query("select attr.name as a_name,specific_attr.id as spe_id,specific_attr.`name` from specific_attr join attr on attr.id=specific_attr.attr_id where attr.attr_category_id=$cate_id");
             $new_arr=[];
             foreach ($arr as $key => $value) {
                 $new_arr[$value['a_name']][$value['spe_id']]=$value['name'];
             }
             $moren_attr=Db::query("select specific_attr.id from specific_attr join goods_attr on specific_attr.id=goods_attr.specific_attr_id where goods_attr.goods_id=$id");
-            // $attr_id=$specific_attr[0]['attr_category_id'];
-		    // $attr_cate=Db::query("select * from attr_category where id=$attr_id");
-            // $shop_brand=Db::query("select * from shop_brand");
-            // $shop_category=Db::query("select * from shop_category");
-            // echo "123";die;
-            // $there=Db::query("select goods.goods_id,goods.goods_name,goods.is_show,specific_attr.id as specific_attr_id,specific_attr.`name`,attr.id as attr_id,attr.`name` as attr_name from goods join goods_attr on goods.goods_id=goods_attr.goods_id join specific_attr on goods_attr.specific_attr_id=specific_attr.id join attr on goods_attr.attr_id=attr.id where goods.goods_id=$id");
             $js=['goods'=>$goods,'attr_category'=>$attr_category,'attr_id'=>$cate_id,'arr'=>$new_arr,'specific_attr'=>$specific_attr,'moren_id'=>$moren_attr,'status'=>'200'];
             echo json_encode($js);
         }
@@ -251,40 +257,15 @@ class Goods extends Common
 	{
 	    $goods_id=Request::post('goods_id');
 		$id=Request::post('id');
-		// echo $id;die;
-		// if (condition) {
-		// 	# code...
-		// }
 		$arr=Db::query("select attr.name as a_name,specific_attr.id as spe_id,specific_attr.`name` from specific_attr join attr on attr.id=specific_attr.attr_id where attr.attr_category_id=$id");
 		$new_arr=[];
 		foreach ($arr as $key => $value) {
 			$new_arr[$value['a_name']][$value['spe_id']]=$value['name'];
 		}
         $specific_attr=Db::query("select specific_attr.id from specific_attr join goods_attr on specific_attr.id=goods_attr.specific_attr_id where goods_attr.goods_id=$goods_id");
-//		echo "<pre>";
-//		var_dump($specific_attr);
-//		echo "<pre>";
-//		var_dump($new_arr);
 		$js=['code'=>'0','status'=>'ok','data'=>$new_arr,'spe_id'=>$specific_attr];
 		echo json_encode($js);
-		// if ($id=='') {
-		// 	$js=['code'=>'0','status'=>'error','data'=>'属性分类未选择'];
-		// 	echo json_encode($js);
-		// }else{
-		// 	$arr=Db::query("select * from attr where attr_category_id=$id");
-		// 	$new=[];
-		// 	$new_arr=[];
-		// 	foreach ($arr as $key => $value) {
-		// 		$new[]=$value['id'];
-		// 	}
-		// 	foreach ($new as $key => $value) {
-		// 		$new_arr[]=Db::query("select * from specific_attr where attr_id=$value");
-		// 	}
-		// 	echo "<pre>";
-		// 	var_dump($new_arr);
-		// 	// $js=['code'=>'0','status'=>'ok','data'=>$arr];
-		// 	// echo json_encode($js);
-		// }
+
 		
 	}
 	public function specific_attr()
@@ -323,5 +304,52 @@ class Goods extends Common
 			$js=['code'=>'0','status'=>'ok','data'=>'属性添加成功!'];
 			echo json_encode($js);
 		}
-	}	
+
+	}
+	public function my_sel()
+    {
+        $data=Request::post();
+        $name=$data['name'];
+        $sql="select g.goods_id,g.goods_name,sb.brand_name,sc.cate_name,g.is_show,g.goods_out,g.add_time from goods as g join shop_brand as sb on g.brand_id=sb.brand_id join shop_category as sc on g.cate_id=sc.cate_id where g.goods_name like '%$name%' limit 0,50";
+        $redis = new Redis();
+        $redis->connect('127.0.0.1',6379);
+        $hot=$redis->Zrevrange('sort',0,4);
+        if ($name==''){
+            $arr=Db::query($sql);
+            $ayy=json_encode($arr);
+            $js=['code'=>'0','status'=>'error','data'=>$arr,'hot'=>$hot];
+            echo json_encode($js);
+            die;
+        }
+        $number=$redis->Hget('select',$name);
+        if ($number==''){
+            $arr=Db::query($sql);
+
+            $redis->Hset('select',$name,1);
+            $redis->Zadd('sort',1,$name);
+            $hot=$redis->Zrevrange('sort',0,4,true);
+            $js=['code'=>'0','status'=>'ok','data'=>$arr,'hot'=>$hot];
+            echo json_encode($js);
+            die;
+        }else{
+            $new_number=$number+1;
+            $redis->Zadd('sort',$new_number,$name);
+            $redis->Hset('select',$name,$new_number);
+            $hot=$redis->Zrevrange('sort',0,4,true);
+            if (($number-1)>5){
+                $a=$redis->Hget('list',$name);
+                $new_arr=json_decode($a);
+                $js=['code'=>'0','status'=>'ok','data'=>$new_arr,'hot'=>$hot];
+                echo json_encode($js);
+            }else{
+                $arr=Db::query($sql);
+                $ayy=json_encode($arr);
+                $redis->Hset('list',$name,$ayy);
+                $hot=$redis->Zrevrange('sort',0,4,true);
+                $js=['code'=>'0','status'=>'ok','data'=>$arr,'hot'=>$hot];
+                echo json_encode($js);
+            }
+
+        }
+    }
 }

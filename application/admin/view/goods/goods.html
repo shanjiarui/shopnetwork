@@ -119,13 +119,19 @@
 
 			</div>
 			<div class="text-c">
-			<span id="op">&nbsp</span>
+				<input type="text" class="input-text" style="width:200px" placeholder="搜索" id="sel">
+				<button type="submit" class="btn btn-success" onclick="my_select()"><i class="Hui-iconfont">&#xe665;</i> 搜索商品</button>
+
+			</div>
+			<div class="text-c" id="hot_list">
+
+
 			</div>
 			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="all_del()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
 			<table class="table table-border table-bordered table-bg">
 				<thead>
 					<tr>
-						<th scope="col" colspan="10" style="text-align: center;font-size: 30px">商品</th>
+						<th scope="col" colspan="11" style="text-align: center;font-size: 30px">商品</th>
 					</tr>
 					<tr class="text-c">
 						<th width="25"><input type="checkbox" name="" value=""></th>
@@ -191,12 +197,20 @@
 			url:"{:url('goods/list')}",
 			dataType:'json',
 			success:function (res) {
+				var li=''
 				var tr=''
 				var all_cate=''
 				var all_brand=''
 				cate=res.cate
 				brand=res.brand
 				arr=res.data
+				hot=res.hot
+				num=0
+				$.each(hot,function (key,value) {
+					num=num+1
+					li=li+"<span style='color:red;'><strong>"+num+":</strong>"+key+"</span>&nbsp"+value+"次&nbsp&nbsp&nbsp&nbsp"
+				})
+				$('#hot_list').html(li)
 				for (var i = 0; i < cate.length; i++) {
 					all_cate=all_cate+"<option value='"+cate[i].cate_id+"'>"+cate[i].cate_name+"</option>"
 				}
@@ -222,7 +236,7 @@
 		})
 	}
 	list()
-	function add_action(c) {
+	function add_action() {
 		var __token__=$('#token').val()
 		var name=$('#name').val()
 		var price=$('#price').val()
@@ -365,6 +379,41 @@
 				}else{
 					alert('修改失败!')
 				}
+			}
+		})
+	}
+	function my_select() {
+		var name=$('#sel').val()
+		$.ajax({
+			url:"{:url('goods/my_sel')}",
+			data:{
+				name:name
+			},
+			type:"post",
+			dataType:'json',
+			success:function (result) {
+				console.log(result)
+				res=result.data
+
+				hot=result.hot
+				tr=''
+				li=''
+				num=0
+				for (var i = 0; i < res.length; i++) {
+					if (arr[i].is_show == "1") {
+						tr = tr + "<tr class='text-c'><td><input type='checkbox' value='" + res[i].goods_id + "' name='my_input' id='po'></td><td>" + res[i].goods_id + "</td><td>" + res[i].goods_name + "</td><td>" + res[i].cate_name + "</td><td>" + res[i].brand_name + "</td><td><a href='{:url('goods/goods_img')}?id=" + arr[i].goods_id + "'>点击查看</a></td><td><a title='详情' href='{:url('goods/minute')}?id=" + res[i].goods_id + "'>查看属性</a></td><td><a href='{:url('goodsspecs/goodsspecs')}?id=" + res[i].goods_id + "'>查看货品</a></td><td value='1' onclick='show(" + res[i].goods_id + ",1)'><i class='Hui-iconfont'>&#xe6a8;</i></td><td>" + res[i].add_time + "</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods(" + res[i].goods_id + ")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods(" + res[i].goods_id + ")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					} else {
+						tr = tr + "<tr class='text-c'><td><input type='checkbox' value='" + res[i].goods_id + "' name='my_input' id='po'></td><td>" + res[i].goods_id + "</td><td>" + res[i].goods_name + "</td><td>" + res[i].cate_name + "</td><td>" + res[i].brand_name + "</td><td><a href='{:url('goods/goods_img')}?id=" + arr[i].goods_id + "'>点击查看</a></td><td><a title='详情' href='{:url('goods/minute')}?id=" + res[i].goods_id + "'>查看属性</a></td><td><a href='{:url('goodsspecs/goodsspecs')}?id=" + res[i].goods_id + "'>查看货品</a></td><td value='0' onclick='show(" + res[i].goods_id + ",0)'><i class='Hui-iconfont'>&#xe631;</i></td><td>" + res[i].add_time + "</td><td><a title='编辑' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='up_goods(" + res[i].goods_id + ")'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;'  class='ml-5' style='text-decoration:none' onclick='del_goods(" + res[i].goods_id + ")'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					}
+
+				}
+				$('#ii').html(tr)
+				$.each(hot,function (key,value) {
+					num=num+1
+					li=li+"<span style='color:red;'><strong>"+num+":</strong>"+key+"</span>&nbsp"+value+"次&nbsp&nbsp&nbsp&nbsp"
+				})
+
+				$('#hot_list').html(li)
 			}
 		})
 	}

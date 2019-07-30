@@ -7,6 +7,7 @@ use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 // use \tp5er\easyExcel;
+use Redis;
 use think\excel\PHPExcel;
 use think\Db;
 //use think\Controller;
@@ -126,4 +127,49 @@ class Test extends Common
 //                }
             }
 	    }
+	    public function red()
+        {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1', 6379);
+//            $redis->Zremrangebyscore('sore',0,200);
+            $redis->Zremrangebyrank('sort', 0, 200);
+            $hot = $redis->Zrevrange('sort', 0, 10);
+            $redis->Hdel('select');
+            $redis->Hdel('list');
+            $a=$redis->Hget('list','阿');
+            $b=$redis->Hget('select','阿');
+            var_dump($a);
+            var_dump($b);
+            var_dump($hot);
+//            $redis->Zadd('test',1,'a');
+//            $redis->Zadd('test',2,'b');
+//            $redis->Zadd('test',3,'c');
+//            $redis->Zadd('test',4,'d');
+//            $redis->Zadd('test',5,'e');
+//            $redis->Zadd('test',6,'f');
+//            $redis->Zadd('test',7,'g');
+//            $hot=$redis->Zrevrange('test',0,2);
+//            var_dump($hot);
+        }
+        public function add(){
+            $num=4;
+            for ($j=0; $j<100000; $j++){
+                for ($i=0; $i<$num; $i++) {
+                    // 使用chr()函数拼接双字节汉字，前一个chr()为高位字节，后一个为低位字节
+                    $d = chr(mt_rand(0xB0,0xD0)).chr(mt_rand(0xA1, 0xF0));
+                    $c = chr(mt_rand(0xB0,0xD0)).chr(mt_rand(0xA1, 0xF0));
+                    $a = chr(mt_rand(0xB0,0xD0)).chr(mt_rand(0xA1, 0xF0));
+                    // 转码
+                    $e = iconv('GB2312', 'UTF-8', $d);
+                    $f = iconv('GB2312', 'UTF-8', $c);
+                    $b = iconv('GB2312', 'UTF-8', $a);
+                }
+                $k=$e.$b.$f;
+                Db::query("insert into goods(goods_name,brand_id,cate_id,is_show,attr_cate_id) values ('$k',7,4,0,1)");
+            }
+
+        }
+        public function h5(){
+
+        }
 	}
